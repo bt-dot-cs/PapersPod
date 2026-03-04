@@ -123,12 +123,12 @@ async def test_full_pipeline_mocked(tmp_path: Path):
         content = messages[0]["content"] if messages else ""
         if "Extract structured knowledge" in content:
             return _make_claude_response(_make_graph_extract_json())
-        elif "annotated bibliography" in content.lower():
-            return _make_claude_response("**Vaswani et al. (2017).** Attention Is All You Need.\n\nAnnotation text.")
+        elif "podcast script" in content.lower() or "HOST A (Alex)" in content:
+            return _make_claude_response(_make_script_json())
         elif "introductory paragraph" in content.lower():
             return _make_claude_response("This episode explores transformers.")
-        elif "podcast script" in content.lower() or "HOST A" in content or "HOST B" in content:
-            return _make_claude_response(_make_script_json())
+        elif "annotated bibliography" in content.lower():
+            return _make_claude_response("**Vaswani et al. (2017).** Attention Is All You Need.\n\nAnnotation text.")
         return _make_claude_response("Default response.")
 
     with patch("core.arxiv_client.arxiv.Client") as MockArxiv, \

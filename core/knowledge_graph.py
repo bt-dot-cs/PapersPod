@@ -18,12 +18,12 @@ def _normalize_concept(name: str) -> str:
 
 
 class KnowledgeGraph:
-    def __init__(self, graph_path: Path = GRAPH_PATH) -> None:
-        self._graph_path = graph_path
+    def __init__(self, graph_path: Optional[Path] = None) -> None:
+        self._graph_path = graph_path if graph_path is not None else GRAPH_PATH
         self._snapshot_path = GRAPH_SNAPSHOT_PATH
-        if graph_path.exists():
-            self._graph: nx.DiGraph = nx.read_graphml(graph_path)
-            logger.info("Loaded graph from %s (%d nodes)", graph_path, self._graph.number_of_nodes())
+        if self._graph_path.exists():
+            self._graph: nx.DiGraph = nx.read_graphml(self._graph_path)
+            logger.info("Loaded graph from %s (%d nodes)", self._graph_path, self._graph.number_of_nodes())
         else:
             self._graph = nx.DiGraph()
             logger.info("Created new empty graph")
