@@ -1,0 +1,53 @@
+[
+  {
+    "arxiv_id": "1706.03762",
+    "title": "Attention Is All You Need",
+    "authors": ["Ashish Vaswani", "Noam Shazeer", "Niki Parmar"],
+    "abstract": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. On two machine translation tasks, these models are superior in quality while being more parallelizable and requiring significantly less time to train.",
+    "published_date": "2017-06-12",
+    "pdf_url": "https://arxiv.org/pdf/1706.03762",
+    "citation_count": 80000,
+    "citation_velocity": 8000.0,
+    "s2_tldr": "A new simple network architecture, the Transformer, based solely on attention mechanisms.",
+    "first_seen_date": null,
+    "study_period_start": null,
+    "study_period_end": null,
+    "interest_score": null,
+    "depth_score": null,
+    "flagged_for_reading": false
+  },
+  {
+    "arxiv_id": "1810.04805",
+    "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+    "authors": ["Jacob Devlin", "Ming-Wei Chang", "Kenton Lee", "Kristina Toutanova"],
+    "abstract": "We introduce a new language representation model called BERT, which stands for Bidirectional Encoder Representations from Transformers. Unlike recent language representation models, BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers.",
+    "published_date": "2018-10-11",
+    "pdf_url": "https://arxiv.org/pdf/1810.04805",
+    "citation_count": 50000,
+    "citation_velocity": 6250.0,
+    "s2_tldr": "BERT pre-trains deep bidirectional representations by conditioning on both left and right context.",
+    "first_seen_date": null,
+    "study_period_start": null,
+    "study_period_end": null,
+    "interest_score": null,
+    "depth_score": null,
+    "flagged_for_reading": false
+  },
+  {
+    "arxiv_id": "2005.14165",
+    "title": "Language Models are Few-Shot Learners",
+    "authors": ["Tom B. Brown", "Benjamin Mann", "Nick Ryder"],
+    "abstract": "We demonstrate that scaling language models greatly improves task-agnostic, few-shot performance, sometimes even reaching competitiveness with prior state-of-the-art fine-tuning approaches. Specifically, we train GPT-3, an autoregressive language model with 175 billion parameters, and test its performance in the few-shot setting.",
+    "published_date": "2020-05-28",
+    "pdf_url": "https://arxiv.org/pdf/2005.14165",
+    "citation_count": 25000,
+    "citation_velocity": 4166.0,
+    "s2_tldr": "GPT-3 demonstrates that scaling language models greatly improves few-shot task performance.",
+    "first_seen_date": null,
+    "study_period_start": null,
+    "study_period_end": null,
+    "interest_score": null,
+    "depth_score": null,
+    "flagged_for_reading": false
+  }
+]
