@@ -25,6 +25,7 @@ ELEVENLABS_API_KEY: str = _require("ELEVENLABS_API_KEY")
 ELEVENLABS_VOICE_A_ID: str = _require("ELEVENLABS_VOICE_A_ID")
 ELEVENLABS_VOICE_B_ID: str = _require("ELEVENLABS_VOICE_B_ID")
 SEMANTIC_SCHOLAR_API_KEY: str | None = os.getenv("SEMANTIC_SCHOLAR_API_KEY") or None
+OPENALEX_EMAIL: str = os.getenv("OPENALEX_EMAIL", "")
 
 CLAUDE_MODEL: str = "claude-sonnet-4-6"
 
@@ -33,3 +34,4 @@ GRAPH_PATH: Path = DATA_DIR / "graphs" / "graph.graphml"
 GRAPH_SNAPSHOT_PATH: Path = DATA_DIR / "graphs" / "graph_snapshot.json"
 
 ARXIV_RATE_LIMIT_SECONDS: float = 3.0
+OPENALEX_RATE_LIMIT_SECONDS: float = 0.1

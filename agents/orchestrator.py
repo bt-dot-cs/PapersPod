@@ -74,6 +74,10 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--cross-disciplinary", action="store_true", default=False)
     parser.add_argument("--study-data-start", help="Study data period start (YYYY-MM-DD)")
     parser.add_argument("--study-data-end", help="Study data period end (YYYY-MM-DD)")
+    parser.add_argument(
+        "--source", choices=["auto", "arxiv", "openalex"], default="auto",
+        help="Paper source: auto (default, picks by discipline), arxiv, or openalex"
+    )
     return parser.parse_args()
 
 
@@ -167,6 +171,7 @@ def main() -> None:
         max_papers=args.max_papers,
         include_preprints=args.include_preprints,
         user_profile=user_profile,
+        source=args.source,
     )
 
     episode_id = _generate_episode_id(args.topic)

@@ -2,13 +2,31 @@ import json
 import logging
 from pathlib import Path
 
-from core import arxiv_client, semantic_scholar_client
+from core import arxiv_client, openalex_client, semantic_scholar_client
 from core.config import DATA_DIR
 from core.models import ExpertiseLevel, Paper, QueryParameters
 
 logger = logging.getLogger(__name__)
 
 _SURVEY_KEYWORDS = {"survey", "review", "introduction", "overview", "tutorial", "primer"}
+
+# Disciplines that map to OpenAlex (broad social science / humanities coverage)
+_OPENALEX_DISCIPLINES = {
+    "economics", "history", "sociology", "political science", "law",
+    "anthropology", "philosophy", "education", "psychology",
+    "communications", "labor studies", "science and technology studies",
+    "sts", "cultural studies", "geography", "history of technology",
+}
+
+
+def _select_source(query: QueryParameters) -> str:
+    """Return 'arxiv' or 'openalex' based on query.source and discipline heuristics."""
+    if query.source != "auto":
+        return query.source
+    for d in query.disciplines:
+        if d.lower().strip() in _OPENALEX_DISCIPLINES:
+            return "openalex"
+    return "arxiv"
 
 
 def _get_expertise_level(query: QueryParameters) -> ExpertiseLevel:
@@ -53,9 +71,16 @@ async def run(query: QueryParameters, episode_id: str) -> list[Paper]:
     """Fetch and enrich papers, apply expertise-level ordering, save to disk."""
     logger.info("FetcherAgent: fetching papers for episode %s", episode_id)
 
-    papers = await arxiv_client.fetch_papers(query)
+    source = _select_source(query)
+    logger.info("FetcherAgent: using source=%s", source)
+
+    if source == "openalex":
+        papers = await openalex_client.fetch_papers(query)
+    else:
+        papers = await arxiv_client.fetch_papers(query)
+
     if not papers:
-        logger.warning("FetcherAgent: no papers returned from arXiv")
+        logger.warning("FetcherAgent: no papers returned from %s", source)
         return []
 
     papers = await semantic_scholar_client.enrich_papers(papers)

@@ -32,6 +32,7 @@ class QueryParameters(BaseModel):
     max_papers: int = 10
     include_preprints: bool = True
     user_profile: Optional[UserProfile] = None
+    source: Literal["auto", "arxiv", "openalex"] = "auto"
 
     @field_validator("publication_date_range")
     @classmethod
@@ -58,6 +59,8 @@ class Paper(BaseModel):
     study_period_start: Optional[date] = None  # Temporal scope of referenced data
     study_period_end: Optional[date] = None
     pdf_url: Optional[str] = None
+    # Source metadata
+    openalex_id: Optional[str] = None          # OpenAlex work ID (e.g. W2741809807)
     # Semantic Scholar enrichment
     citation_count: Optional[int] = None
     citation_velocity: Optional[float] = None  # Citations per year
