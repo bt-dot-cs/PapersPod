@@ -37,7 +37,7 @@ Abstract: {abstract}"""
 
 
 def _build_search_query(query: QueryParameters) -> str:
-    """Combine topic and discipline category codes into an arXiv query string."""
+    """Combine topic, discipline category codes, and date range into an arXiv query string."""
     parts = [query.topic]
     categories = []
     for discipline in query.disciplines:
@@ -103,8 +103,8 @@ async def fetch_papers(query: QueryParameters) -> list[Paper]:
     client_arxiv = arxiv.Client()
     search = arxiv.Search(
         query=search_query,
-        max_results=query.max_papers,
-        sort_by=arxiv.SortCriterion.SubmittedDate,
+        max_results=max(query.max_papers * 20, 50),
+        sort_by=arxiv.SortCriterion.Relevance,
     )
 
     papers: list[Paper] = []

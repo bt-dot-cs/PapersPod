@@ -106,6 +106,14 @@ def _build_graph_context(graph: KnowledgeGraph, paper_ids: list[str]) -> str:
     return "\n".join(lines) if lines else "Graph context not yet populated."
 
 
+_HOST_ALIASES: dict[str, str] = {"alex": "A", "jordan": "B", "host a": "A", "host b": "B"}
+
+
+def _normalize_host(host: str) -> str:
+    """Map full character names back to 'A' or 'B' identifiers."""
+    return _HOST_ALIASES.get(host.lower().strip(), host)
+
+
 def _parse_turns(raw: str) -> list[DialogueTurn]:
     """Parse Claude's JSON array response into DialogueTurn objects."""
     raw = raw.strip()
@@ -114,7 +122,7 @@ def _parse_turns(raw: str) -> list[DialogueTurn]:
         raw = "\n".join(lines[1:-1] if lines[-1].strip() == "```" else lines[1:])
     try:
         turns_data = json.loads(raw)
-        return [DialogueTurn(host=t["host"], text=t["text"]) for t in turns_data]
+        return [DialogueTurn(host=_normalize_host(t["host"]), text=t["text"]) for t in turns_data]
     except (json.JSONDecodeError, KeyError) as exc:
         logger.error("Script parse error: %s — attempting line-by-line fallback", exc)
         turns = []
@@ -124,7 +132,7 @@ def _parse_turns(raw: str) -> list[DialogueTurn]:
                 continue
             try:
                 obj = json.loads(line)
-                turns.append(DialogueTurn(host=obj["host"], text=obj["text"]))
+                turns.append(DialogueTurn(host=_normalize_host(obj["host"]), text=obj["text"]))
             except Exception:
                 continue
         return turns
