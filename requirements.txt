@@ -1,0 +1,32 @@
+# Core pipeline
+arxiv
+semanticscholar
+anthropic
+pydantic>=2.0
+python-dotenv
+
+# Audio
+elevenlabs
+pydub
+
+# Graph
+networkx
+lxml
+
+# Web
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Distribution (Phase 4)
+feedgen
+
+# Scheduling (Phase 3)
+apscheduler
+
+# Testing
+pytest
+pytest-asyncio
+pytest-mock
+httpx
+respx
