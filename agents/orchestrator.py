@@ -48,9 +48,13 @@ def _generate_episode_id(topic: str) -> str:
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="PapersPod — research podcast generator")
-    parser.add_argument("--topic", required=True, help="Primary search topic")
     parser.add_argument(
-        "--disciplines", required=True, nargs="+",
+        "--skip-to-audio", metavar="EPISODE_ID",
+        help="Skip steps 1-4 and generate audio from an existing saved script"
+    )
+    parser.add_argument("--topic", help="Primary search topic")
+    parser.add_argument(
+        "--disciplines", nargs="+",
         help="Disciplines to search (e.g. 'machine learning' 'neuroscience')"
     )
     parser.add_argument(
@@ -79,6 +83,24 @@ def _parse_args() -> argparse.Namespace:
         help="Paper source: auto (default, picks by discipline), arxiv, or openalex"
     )
     return parser.parse_args()
+
+
+async def run_audio_only(episode_id: str) -> Path:
+    """Load a saved script and run only the audio generation step."""
+    from agents import voice_agent
+
+    script_path = DATA_DIR / "scripts" / f"{episode_id}.json"
+    if not script_path.exists():
+        raise FileNotFoundError(f"No saved script found at {script_path}")
+
+    from core.models import PodcastScript
+    with open(script_path) as f:
+        script = PodcastScript.model_validate(json.load(f))
+
+    logger.info("[5/5] Generating audio from saved script (%d turns)...", len(script.turns))
+    audio_path = await voice_agent.run(script)
+    logger.info("[5/5] Done — %s", audio_path)
+    return audio_path
 
 
 async def run_pipeline(query: QueryParameters, episode_id: str) -> Episode:
@@ -141,6 +163,23 @@ async def run_pipeline(query: QueryParameters, episode_id: str) -> Episode:
 
 def main() -> None:
     args = _parse_args()
+
+    if args.skip_to_audio:
+        episode_id = args.skip_to_audio
+        logger.info("Resuming episode %s — audio-only mode", episode_id)
+        try:
+            audio_path = asyncio.run(run_audio_only(episode_id))
+        except Exception as exc:
+            logger.error("Audio generation failed: %s", exc, exc_info=True)
+            raise SystemExit(1)
+        print("\n" + "=" * 60)
+        print(f"Episode ID   : {episode_id}")
+        print(f"Audio        : {audio_path}")
+        print("=" * 60)
+        return
+
+    if not args.topic or not args.disciplines:
+        raise SystemExit("--topic and --disciplines are required unless --skip-to-audio is used")
 
     study_data_period = None
     if args.study_data_start and args.study_data_end:
