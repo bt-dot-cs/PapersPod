@@ -74,3 +74,31 @@ async def test_run_audio_only_raises_if_script_missing(tmp_path: Path):
         from agents.orchestrator import run_audio_only
         with pytest.raises(FileNotFoundError, match="No saved script"):
             await run_audio_only("nonexistent-episode-id")
+
+
+@pytest.mark.asyncio
+async def test_run_audio_only_overrides_voice_provider(tmp_path: Path):
+    """--voice-provider sets voice_agent.VOICE_PROVIDER before synthesis runs."""
+    import agents.voice_agent as va
+
+    episode_id = "2026-03-04_test_ab12"
+    script = _make_script(episode_id)
+    mp3_bytes = _make_mp3_bytes()
+
+    scripts_dir = tmp_path / "scripts"
+    scripts_dir.mkdir(parents=True)
+    (scripts_dir / f"{episode_id}.json").write_text(script.model_dump_json())
+
+    captured_provider = []
+
+    async def fake_synthesize(text: str, host: str) -> bytes:
+        captured_provider.append(va.VOICE_PROVIDER)
+        return mp3_bytes
+
+    with patch("agents.orchestrator.DATA_DIR", tmp_path), \
+         patch("agents.voice_agent.DATA_DIR", tmp_path), \
+         patch("agents.voice_agent._synthesize", side_effect=fake_synthesize):
+        from agents.orchestrator import run_audio_only
+        await run_audio_only(episode_id, voice_provider="openai")
+
+    assert all(p == "openai" for p in captured_provider)

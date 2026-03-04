@@ -62,11 +62,11 @@ def _parse_args() -> argparse.Namespace:
         help="depth = methodological focus, breadth = landscape sweep"
     )
     parser.add_argument(
-        "--publication-start", required=True,
+        "--publication-start",
         help="Publication date range start (YYYY-MM-DD)"
     )
     parser.add_argument(
-        "--publication-end", required=True,
+        "--publication-end",
         help="Publication date range end (YYYY-MM-DD)"
     )
     parser.add_argument("--max-papers", type=int, default=5)
@@ -82,12 +82,20 @@ def _parse_args() -> argparse.Namespace:
         "--source", choices=["auto", "arxiv", "openalex"], default="auto",
         help="Paper source: auto (default, picks by discipline), arxiv, or openalex"
     )
+    parser.add_argument(
+        "--voice-provider", choices=["elevenlabs", "openai", "google"], default=None,
+        help="TTS provider override (default: use VOICE_PROVIDER from .env)"
+    )
     return parser.parse_args()
 
 
-async def run_audio_only(episode_id: str) -> Path:
+async def run_audio_only(episode_id: str, voice_provider: str | None = None) -> Path:
     """Load a saved script and run only the audio generation step."""
     from agents import voice_agent
+
+    if voice_provider:
+        voice_agent.VOICE_PROVIDER = voice_provider
+        logger.info("Voice provider overridden to: %s", voice_provider)
 
     script_path = DATA_DIR / "scripts" / f"{episode_id}.json"
     if not script_path.exists():
@@ -103,9 +111,13 @@ async def run_audio_only(episode_id: str) -> Path:
     return audio_path
 
 
-async def run_pipeline(query: QueryParameters, episode_id: str) -> Episode:
+async def run_pipeline(query: QueryParameters, episode_id: str, voice_provider: str | None = None) -> Episode:
     """Execute the full pipeline and return an Episode record."""
     from agents import bibliography_agent, fetcher_agent, graph_agent, script_agent, voice_agent
+
+    if voice_provider:
+        voice_agent.VOICE_PROVIDER = voice_provider
+        logger.info("Voice provider overridden to: %s", voice_provider)
 
     t0 = time.time()
 
@@ -168,7 +180,7 @@ def main() -> None:
         episode_id = args.skip_to_audio
         logger.info("Resuming episode %s — audio-only mode", episode_id)
         try:
-            audio_path = asyncio.run(run_audio_only(episode_id))
+            audio_path = asyncio.run(run_audio_only(episode_id, voice_provider=args.voice_provider))
         except Exception as exc:
             logger.error("Audio generation failed: %s", exc, exc_info=True)
             raise SystemExit(1)
@@ -180,6 +192,8 @@ def main() -> None:
 
     if not args.topic or not args.disciplines:
         raise SystemExit("--topic and --disciplines are required unless --skip-to-audio is used")
+    if not args.publication_start or not args.publication_end:
+        raise SystemExit("--publication-start and --publication-end are required unless --skip-to-audio is used")
 
     study_data_period = None
     if args.study_data_start and args.study_data_end:
@@ -217,7 +231,7 @@ def main() -> None:
     logger.info("Starting PapersPod pipeline — episode: %s", episode_id)
 
     try:
-        episode = asyncio.run(run_pipeline(query, episode_id))
+        episode = asyncio.run(run_pipeline(query, episode_id, voice_provider=args.voice_provider))
     except Exception as exc:
         logger.error("Pipeline failed: %s", exc, exc_info=True)
         raise SystemExit(1)
