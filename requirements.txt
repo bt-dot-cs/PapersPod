@@ -10,6 +10,10 @@ elevenlabs
 pydub
 audioop-lts           # Python 3.13 backport of audioop (required by pydub)
 
+# Voice providers (alternatives to ElevenLabs)
+openai                              # VOICE_PROVIDER=openai
+# google-cloud-texttospeech         # VOICE_PROVIDER=google (uncomment to install)
+
 # Graph
 networkx
 lxml

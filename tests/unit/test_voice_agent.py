@@ -42,12 +42,10 @@ async def test_voice_agent_generates_segments(tmp_path: Path):
     script = _make_script(n_turns=2)
     mp3_bytes = _make_mp3_bytes()
 
-    with patch("agents.voice_agent.ElevenLabs") as MockEL, \
+    with patch("agents.voice_agent._synthesize", new_callable=AsyncMock, return_value=mp3_bytes), \
          patch("agents.voice_agent.DATA_DIR", tmp_path):
-        MockEL.return_value.text_to_speech.convert.side_effect = \
-            lambda voice_id, text, model_id: iter([mp3_bytes])
         from agents.voice_agent import run
-        result = await run(script)
+        await run(script)
 
     seg_dir = tmp_path / "audio" / "segments" / script.episode_id
     assert (seg_dir / "000_A.mp3").exists()
@@ -60,10 +58,8 @@ async def test_voice_agent_returns_episode_path(tmp_path: Path):
     script = _make_script(n_turns=2)
     mp3_bytes = _make_mp3_bytes()
 
-    with patch("agents.voice_agent.ElevenLabs") as MockEL, \
+    with patch("agents.voice_agent._synthesize", new_callable=AsyncMock, return_value=mp3_bytes), \
          patch("agents.voice_agent.DATA_DIR", tmp_path):
-        MockEL.return_value.text_to_speech.convert.side_effect = \
-            lambda voice_id, text, model_id: iter([mp3_bytes])
         from agents.voice_agent import run
         result = await run(script)
 
@@ -74,25 +70,27 @@ async def test_voice_agent_returns_episode_path(tmp_path: Path):
 
 @pytest.mark.asyncio
 async def test_voice_agent_correct_voice_per_host(tmp_path: Path):
-    """Host A uses VOICE_A_ID, Host B uses VOICE_B_ID."""
-    script = _make_script(n_turns=2)
-    mp3_bytes = _make_mp3_bytes()
-    captured_voice_ids = []
+    """_voice_id returns the right voice for each host under each provider."""
+    import importlib
+    import agents.voice_agent as va
 
-    def mock_convert(voice_id, text, model_id):
-        captured_voice_ids.append(voice_id)
-        return iter([mp3_bytes])
+    with patch("agents.voice_agent.VOICE_PROVIDER", "elevenlabs"), \
+         patch("agents.voice_agent.ELEVENLABS_VOICE_A_ID", "el-voice-a"), \
+         patch("agents.voice_agent.ELEVENLABS_VOICE_B_ID", "el-voice-b"):
+        assert va._voice_id("A") == "el-voice-a"
+        assert va._voice_id("B") == "el-voice-b"
 
-    with patch("agents.voice_agent.ElevenLabs") as MockEL, \
-         patch("agents.voice_agent.DATA_DIR", tmp_path), \
-         patch("agents.voice_agent.ELEVENLABS_VOICE_A_ID", "voice-a-id"), \
-         patch("agents.voice_agent.ELEVENLABS_VOICE_B_ID", "voice-b-id"):
-        MockEL.return_value.text_to_speech.convert.side_effect = mock_convert
-        from agents.voice_agent import run
-        await run(script)
+    with patch("agents.voice_agent.VOICE_PROVIDER", "openai"), \
+         patch("agents.voice_agent.OPENAI_TTS_VOICE_A", "nova"), \
+         patch("agents.voice_agent.OPENAI_TTS_VOICE_B", "onyx"):
+        assert va._voice_id("A") == "nova"
+        assert va._voice_id("B") == "onyx"
 
-    assert captured_voice_ids[0] == "voice-a-id"   # Turn 0 is host A
-    assert captured_voice_ids[1] == "voice-b-id"   # Turn 1 is host B
+    with patch("agents.voice_agent.VOICE_PROVIDER", "google"), \
+         patch("agents.voice_agent.GOOGLE_TTS_VOICE_A", "en-US-Neural2-F"), \
+         patch("agents.voice_agent.GOOGLE_TTS_VOICE_B", "en-US-Neural2-D"):
+        assert va._voice_id("A") == "en-US-Neural2-F"
+        assert va._voice_id("B") == "en-US-Neural2-D"
 
 
 @pytest.mark.asyncio
@@ -100,7 +98,6 @@ async def test_voice_agent_segments_in_order(tmp_path: Path):
     """stitch_episode receives segment paths in the correct order."""
     script = _make_script(n_turns=3)
     mp3_bytes = _make_mp3_bytes()
-
     captured_paths = []
 
     def mock_stitch(segment_paths, output_path, silence_between_ms=400):
@@ -109,10 +106,9 @@ async def test_voice_agent_segments_in_order(tmp_path: Path):
         output_path.write_bytes(mp3_bytes)
         return output_path
 
-    with patch("agents.voice_agent.ElevenLabs") as MockEL, \
+    with patch("agents.voice_agent._synthesize", new_callable=AsyncMock, return_value=mp3_bytes), \
          patch("agents.voice_agent.DATA_DIR", tmp_path), \
          patch("agents.voice_agent.audio_processor.stitch_episode", side_effect=mock_stitch):
-        MockEL.return_value.text_to_speech.convert.return_value = iter([mp3_bytes])
         from agents.voice_agent import run
         await run(script)
 
@@ -123,25 +119,30 @@ async def test_voice_agent_segments_in_order(tmp_path: Path):
 
 
 @pytest.mark.asyncio
-async def test_voice_agent_429_retry(tmp_path: Path):
-    """On 429 error, agent retries once after sleep."""
+async def test_voice_agent_routes_to_openai(tmp_path: Path):
+    """When VOICE_PROVIDER=openai, _synthesize calls tts_openai.synthesize."""
     script = _make_script(n_turns=1)
     mp3_bytes = _make_mp3_bytes()
-    call_count = 0
 
-    def mock_convert(voice_id, text, model_id):
-        nonlocal call_count
-        call_count += 1
-        if call_count == 1:
-            raise Exception("429 Too Many Requests")
-        return iter([mp3_bytes])
-
-    with patch("agents.voice_agent.ElevenLabs") as MockEL, \
-         patch("agents.voice_agent.DATA_DIR", tmp_path), \
-         patch("agents.voice_agent.asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
-        MockEL.return_value.text_to_speech.convert.side_effect = mock_convert
+    with patch("agents.voice_agent.VOICE_PROVIDER", "openai"), \
+         patch("agents.voice_agent.tts_openai.synthesize", new_callable=AsyncMock, return_value=mp3_bytes) as mock_openai, \
+         patch("agents.voice_agent.DATA_DIR", tmp_path):
         from agents.voice_agent import run
-        result = await run(script)
+        await run(script)
 
-    assert call_count == 2
-    mock_sleep.assert_called_once()
+    mock_openai.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_voice_agent_routes_to_elevenlabs(tmp_path: Path):
+    """When VOICE_PROVIDER=elevenlabs (default), _synthesize calls tts_elevenlabs.synthesize."""
+    script = _make_script(n_turns=1)
+    mp3_bytes = _make_mp3_bytes()
+
+    with patch("agents.voice_agent.VOICE_PROVIDER", "elevenlabs"), \
+         patch("agents.voice_agent.tts_elevenlabs.synthesize", new_callable=AsyncMock, return_value=mp3_bytes) as mock_el, \
+         patch("agents.voice_agent.DATA_DIR", tmp_path):
+        from agents.voice_agent import run
+        await run(script)
+
+    mock_el.assert_called_once()
