@@ -1,0 +1,68 @@
+[
+  {
+    "arxiv_id": "W2746350549",
+    "title": "Skilling and deskilling: technological change in classical economic theory and its empirical evidence",
+    "authors": [
+      "Florian Brugger",
+      "Christian Gehrke"
+    ],
+    "abstract": "This article reviews and brings together two literatures: classical political economists\u2019 views on the skilling or deskilling nature of technological change in England, during the eighteenth and nineteenth centuries when they wrote, are compared with the empirical evidence about the skill effects of technological change that emerges from studies of economic historians. In both literatures, we look at both the skill impacts of technological change and at the \u201cinducement mechanisms\u201d that are envisaged for the introduction of new technologies. Adam Smith and Karl Marx both regarded the deskilling of the labour force as the predominant form of biased technical change, but other authors such as Charles Babbage also took account of capital-skill complementarities and skill-enhancing effects of technological change. For Smith, the deskilling bias was an unintended by-product of the increasing division of labour, which in his view \u201cnaturally\u201d led to ever more simplification of workers\u2019 tasks. As opposed to Smith, Marx considered unskilled-biased technical change as a bourgeois weapon in the class struggle for impairing the workers\u2019 bargaining position. Studies of economic historians lend support to Marx\u2019s hypothesis about the inducement mechanisms for the introduction of unskilled-biased innovations, but have produced no clear-cut empirical evidence for a deskilling tendency of eighteenth- and nineteenth-century technological change as a whole. Industrialization in the eighteenth and nineteenth centuries rather led to labour polarization, by simultaneously deskilling a large part of the workforce and raising the demand for some (but fewer) high-skilled workers.",
+    "published_date": "2018-09-12",
+    "study_period_start": null,
+    "study_period_end": null,
+    "pdf_url": "https://link.springer.com/content/pdf/10.1007/s11186-018-9325-7.pdf",
+    "openalex_id": "W2746350549",
+    "citation_count": 39,
+    "citation_velocity": null,
+    "s2_tldr": null,
+    "first_seen_date": null,
+    "interest_score": null,
+    "depth_score": null,
+    "flagged_for_reading": false
+  },
+  {
+    "arxiv_id": "W3106095282",
+    "title": "Understanding the Success of the Know-Nothing Party",
+    "authors": [
+      "Marcella Alsan",
+      "Kimmo Eriksson",
+      "Gregory T. Niemesh"
+    ],
+    "abstract": "We study the contribution of economic conditions to the success of the first avowedly nativist political party in the United States.The Know-Nothing Party gained control of a number of state governments in the 1854-1856 elections running on a staunchly anti-Catholic and anti-Irish platform.Our analysis focuses on the case of Massachusetts, which had experienced a wave of Irish Famine immigration and was at the forefront of industrialization in the United States.Voters in towns with more exposure to Irish labor market crowdout and deskilling in manufacturing were more likely to vote for Know-Nothing candidates in state elections.These two forces played a decisive role in 1855, but not the other years of the Know Nothings' success.We find evidence of reduced wealth accumulation for native workers most exposed to labor market crowdout and deskilling, though this was tempered by occupational upgrading.",
+    "published_date": "2020-11-01",
+    "study_period_start": null,
+    "study_period_end": null,
+    "pdf_url": "https://doi.org/10.3386/w28078",
+    "openalex_id": "W3106095282",
+    "citation_count": 20,
+    "citation_velocity": null,
+    "s2_tldr": null,
+    "first_seen_date": null,
+    "interest_score": null,
+    "depth_score": null,
+    "flagged_for_reading": false
+  },
+  {
+    "arxiv_id": "W4200525695",
+    "title": "Technology, Vintage-Specific Human Capital, and Labor Displacement: Evidence from Linking Patents with Occupations",
+    "authors": [
+      "Leonid Kogan",
+      "Dimitris Papanikolaou",
+      "Lawrence Schmidt",
+      "Bryan Seegmiller"
+    ],
+    "abstract": "We develop a measure of workers' technology exposure that relies only on textual descriptions of patent documents and the tasks performed by workers in an occupation.Our measure appears to identify a combination of labor-saving innovations but also technologies that may require skills that incumbent workers lack.Using a panel of administrative data, we examine how subsequent worker earnings relate to workers' technology exposure.We find that workers at both the bottom but also the top of the earnings distribution are displaced.Our interpretation is that low-paid workers are displaced as their tasks are automated while the highest-paid workers face lower earnings growth as some of their skills become obsolete.Our calibrated model fits these facts and emphasizes the importance of movements in skill quantities, not just skill prices, for the link between technology and inequality.",
+    "published_date": "2021-12-01",
+    "study_period_start": null,
+    "study_period_end": null,
+    "pdf_url": "https://doi.org/10.3386/w29552",
+    "openalex_id": "W4200525695",
+    "citation_count": 22,
+    "citation_velocity": null,
+    "s2_tldr": null,
+    "first_seen_date": null,
+    "interest_score": null,
+    "depth_score": null,
+    "flagged_for_reading": false
+  }
+]

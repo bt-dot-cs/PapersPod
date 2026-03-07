@@ -1,0 +1,2204 @@
+{
+  "nodes": [
+    {
+      "id": "paper:1706.03762",
+      "node_type": "Paper",
+      "label": "Attention Is All You Need",
+      "arxiv_id": "1706.03762",
+      "title": "Attention Is All You Need",
+      "authors": "[\"Ashish Vaswani\", \"Noam Shazeer\", \"Niki Parmar\"]",
+      "abstract": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. On two machine translation tasks, these models are superior in quality while being more parallelizable and requiring significantly less time to train.",
+      "published_date": "2017-06-12",
+      "first_seen_date": "2026-03-04",
+      "citation_count": 80000,
+      "citation_velocity": 9168.5,
+      "s2_tldr": "A new simple network architecture, the Transformer, based solely on attention mechanisms."
+    },
+    {
+      "id": "author:ashish vaswani",
+      "node_type": "Author",
+      "label": "Ashish Vaswani",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:noam shazeer",
+      "node_type": "Author",
+      "label": "Noam Shazeer",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:niki parmar",
+      "node_type": "Author",
+      "label": "Niki Parmar",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:attention_mechanism",
+      "node_type": "Concept",
+      "label": "attention mechanism",
+      "normalized_name": "attention_mechanism",
+      "description": "A fundamental component of transformer models that selects relevant tokens for processing.",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:self-attention",
+      "node_type": "Method",
+      "label": "self-attention",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "paper:1810.04805",
+      "node_type": "Paper",
+      "label": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+      "arxiv_id": "1810.04805",
+      "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+      "authors": "[\"Jacob Devlin\", \"Ming-Wei Chang\", \"Kenton Lee\", \"Kristina Toutanova\"]",
+      "abstract": "We introduce a new language representation model called BERT, which stands for Bidirectional Encoder Representations from Transformers. Unlike recent language representation models, BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers.",
+      "published_date": "2018-10-11",
+      "first_seen_date": "2026-03-04",
+      "citation_count": 50000,
+      "citation_velocity": 6761.38,
+      "s2_tldr": "BERT pre-trains deep bidirectional representations by conditioning on both left and right context."
+    },
+    {
+      "id": "author:jacob devlin",
+      "node_type": "Author",
+      "label": "Jacob Devlin",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:ming-wei chang",
+      "node_type": "Author",
+      "label": "Ming-Wei Chang",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:kenton lee",
+      "node_type": "Author",
+      "label": "Kenton Lee",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:kristina toutanova",
+      "node_type": "Author",
+      "label": "Kristina Toutanova",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "paper:2005.14165",
+      "node_type": "Paper",
+      "label": "Language Models are Few-Shot Learners",
+      "arxiv_id": "2005.14165",
+      "title": "Language Models are Few-Shot Learners",
+      "authors": "[\"Tom B. Brown\", \"Benjamin Mann\", \"Nick Ryder\"]",
+      "abstract": "We demonstrate that scaling language models greatly improves task-agnostic, few-shot performance, sometimes even reaching competitiveness with prior state-of-the-art fine-tuning approaches. Specifically, we train GPT-3, an autoregressive language model with 175 billion parameters, and test its performance in the few-shot setting.",
+      "published_date": "2020-05-28",
+      "first_seen_date": "2026-03-04",
+      "citation_count": 25000,
+      "citation_velocity": 4335.83,
+      "s2_tldr": "GPT-3 demonstrates that scaling language models greatly improves few-shot task performance."
+    },
+    {
+      "id": "author:tom b. brown",
+      "node_type": "Author",
+      "label": "Tom B. Brown",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:benjamin mann",
+      "node_type": "Author",
+      "label": "Benjamin Mann",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:nick ryder",
+      "node_type": "Author",
+      "label": "Nick Ryder",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "paper:2302.04542",
+      "node_type": "Paper",
+      "label": "Efficient Attention via Control Variates",
+      "arxiv_id": "2302.04542",
+      "title": "Efficient Attention via Control Variates",
+      "authors": "[\"Lin Zheng\", \"Jianbo Yuan\", \"Chong Wang\", \"Lingpeng Kong\"]",
+      "abstract": "Random-feature-based attention (RFA) is an efficient approximation of softmax attention with linear runtime and space complexity. However, the approximation gap between RFA and conventional softmax attention is not well studied. Built upon previous progress of RFA, we characterize this gap through the lens of control variates and show that RFA can be decomposed into a sum of multiple control variate estimators for each element in the sequence. This new framework reveals that exact softmax attention can be recovered from RFA by manipulating each control variate. Besides, it allows us to develop a more flexible form of control variates, resulting in a novel attention mechanism that significantly reduces the approximation gap while maintaining linear complexity. Extensive experiments demonstrate that our model outperforms state-of-the-art efficient attention mechanisms on both vision and language tasks.",
+      "published_date": "2023-02-09",
+      "first_seen_date": "2026-03-04",
+      "citation_count": 23,
+      "citation_velocity": 7.51,
+      "s2_tldr": "This new framework reveals that exact softmax attention can be recovered from RFA by manipulating each control variate, resulting in a novel attention mechanism that significantly reduces the approximation gap while maintaining linear complexity."
+    },
+    {
+      "id": "author:lin zheng",
+      "node_type": "Author",
+      "label": "Lin Zheng",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:jianbo yuan",
+      "node_type": "Author",
+      "label": "Jianbo Yuan",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:chong wang",
+      "node_type": "Author",
+      "label": "Chong Wang",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:lingpeng kong",
+      "node_type": "Author",
+      "label": "Lingpeng Kong",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:random-feature_attention",
+      "node_type": "Concept",
+      "label": "Random-Feature Attention",
+      "normalized_name": "random-feature_attention",
+      "description": "Efficient approximation of softmax attention with linear runtime and space complexity using random features",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:softmax_attention",
+      "node_type": "Concept",
+      "label": "Softmax Attention",
+      "normalized_name": "softmax_attention",
+      "description": "Conventional attention mechanism that RFA approximates, serving as the baseline for comparison",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:control_variates",
+      "node_type": "Concept",
+      "label": "Control Variates",
+      "normalized_name": "control_variates",
+      "description": "Statistical technique used to characterize and reduce the approximation gap between RFA and softmax attention",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:approximation_gap",
+      "node_type": "Concept",
+      "label": "Approximation Gap",
+      "normalized_name": "approximation_gap",
+      "description": "The difference in performance between random-feature-based attention and exact softmax attention",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:linear_complexity_attention",
+      "node_type": "Concept",
+      "label": "Linear Complexity Attention",
+      "normalized_name": "linear_complexity_attention",
+      "description": "Attention mechanisms maintaining linear runtime and space complexity",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:random_feature_attention_(rfa)",
+      "node_type": "Method",
+      "label": "Random Feature Attention (RFA)",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:control_variate_decomposition",
+      "node_type": "Method",
+      "label": "Control Variate Decomposition",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:softmax_attention_recovery",
+      "node_type": "Method",
+      "label": "Softmax Attention Recovery",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:flexible_control_variates",
+      "node_type": "Method",
+      "label": "Flexible Control Variates",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:vision_tasks_dataset",
+      "node_type": "Dataset",
+      "label": "Vision Tasks Dataset",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:language_tasks_dataset",
+      "node_type": "Dataset",
+      "label": "Language Tasks Dataset",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:control_variate_decomposition",
+      "node_type": "Concept",
+      "label": "Control Variate Decomposition",
+      "normalized_name": "control_variate_decomposition",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:softmax_attention_recovery",
+      "node_type": "Concept",
+      "label": "Softmax Attention Recovery",
+      "normalized_name": "softmax_attention_recovery",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:flexible_control_variates",
+      "node_type": "Concept",
+      "label": "Flexible Control Variates",
+      "normalized_name": "flexible_control_variates",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "paper:2409.17625",
+      "node_type": "Paper",
+      "label": "Benign Overfitting in Token Selection of Attention Mechanism",
+      "arxiv_id": "2409.17625",
+      "title": "Benign Overfitting in Token Selection of Attention Mechanism",
+      "authors": "[\"Keitaro Sakamoto\", \"Issei Sato\"]",
+      "abstract": "Attention mechanism is a fundamental component of the transformer model and plays a significant role in its success. However, the theoretical understanding of how attention learns to select tokens is still an emerging area of research. In this work, we study the training dynamics and generalization ability of the attention mechanism under classification problems with label noise. We show that, with the characterization of signal-to-noise ratio (SNR), the token selection of attention mechanism achieves benign overfitting, i.e., maintaining high generalization performance despite fitting label noise. Our work also demonstrates an interesting delayed acquisition of generalization after an initial phase of overfitting. Finally, we provide experiments to support our theoretical analysis using both synthetic and real-world datasets.",
+      "published_date": "2024-09-26",
+      "first_seen_date": "2026-03-04",
+      "citation_count": 0,
+      "citation_velocity": 0.0,
+      "s2_tldr": "It is shown that, with the characterization of signal-to-noise ratio (SNR), the token selection of attention mechanism achieves benign overfitting, i.e., maintaining high generalization performance despite fitting label noise."
+    },
+    {
+      "id": "author:keitaro sakamoto",
+      "node_type": "Author",
+      "label": "Keitaro Sakamoto",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:issei sato",
+      "node_type": "Author",
+      "label": "Issei Sato",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:benign_overfitting",
+      "node_type": "Concept",
+      "label": "Benign Overfitting",
+      "normalized_name": "benign_overfitting",
+      "description": "The phenomenon where a model fits label noise yet maintains high generalization performance.",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:signal-to-noise_ratio",
+      "node_type": "Concept",
+      "label": "Signal-to-Noise Ratio",
+      "normalized_name": "signal-to-noise_ratio",
+      "description": "A characterization used to analyze token selection behavior in attention mechanisms.",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:token_selection",
+      "node_type": "Concept",
+      "label": "Token Selection",
+      "normalized_name": "token_selection",
+      "description": "The process by which the attention mechanism identifies and weights relevant input tokens.",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:label_noise",
+      "node_type": "Concept",
+      "label": "Label Noise",
+      "normalized_name": "label_noise",
+      "description": "Incorrect or noisy labels present in training data used in classification problems.",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:delayed_generalization",
+      "node_type": "Concept",
+      "label": "Delayed Generalization",
+      "normalized_name": "delayed_generalization",
+      "description": "A phenomenon where generalization ability is acquired after an initial phase of overfitting.",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:training_dynamics",
+      "node_type": "Concept",
+      "label": "Training Dynamics",
+      "normalized_name": "training_dynamics",
+      "description": "The behavior and evolution of model parameters during the training process.",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:theoretical_analysis",
+      "node_type": "Method",
+      "label": "Theoretical Analysis",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:synthetic_experiments",
+      "node_type": "Method",
+      "label": "Synthetic Experiments",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:real-world_experiments",
+      "node_type": "Method",
+      "label": "Real-world Experiments",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:synthetic_dataset",
+      "node_type": "Dataset",
+      "label": "Synthetic Dataset",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:real-world_dataset",
+      "node_type": "Dataset",
+      "label": "Real-world Dataset",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "paper:2511.13780",
+      "node_type": "Paper",
+      "label": "Self-Attention as Distributional Projection: A Unified Interpretation of Transformer Architecture",
+      "arxiv_id": "2511.13780",
+      "title": "Self-Attention as Distributional Projection: A Unified Interpretation of Transformer Architecture",
+      "authors": "[\"Nihal Mehta\"]",
+      "abstract": "This paper presents a mathematical interpretation of self-attention by connecting it to distributional semantics principles. We show that self-attention emerges from projecting corpus-level co-occurrence statistics into sequence context. Starting from the co-occurrence matrix underlying GloVe embeddings, we demonstrate how the projection naturally captures contextual influence, with the query-key-value mechanism arising as the natural asymmetric extension for modeling directional relationships. Positional encodings and multi-head attention then follow as structured refinements of this same projection principle. Our analysis demonstrates that the Transformer architecture's particular algebraic form follows from these projection principles rather than being an arbitrary design choice.",
+      "published_date": "2025-11-16",
+      "first_seen_date": "2026-03-04",
+      "citation_count": 0,
+      "citation_velocity": 0.0,
+      "s2_tldr": "This paper presents a mathematical interpretation of self-attention by connecting it to distributional semantics principles, and demonstrates that the Transformer architecture's particular algebraic form follows from these projection principles rather than being an arbitrary design choice."
+    },
+    {
+      "id": "author:nihal mehta",
+      "node_type": "Author",
+      "label": "Nihal Mehta",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:self-attention_mechanism",
+      "node_type": "Concept",
+      "label": "self-attention mechanism",
+      "normalized_name": "self-attention_mechanism",
+      "description": "Mathematical operation in Transformers interpreted as projecting corpus-level co-occurrence statistics into sequence context",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:distributional_semantics",
+      "node_type": "Concept",
+      "label": "distributional semantics",
+      "normalized_name": "distributional_semantics",
+      "description": "Principles used to provide mathematical interpretation of self-attention",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:co-occurrence_matrix",
+      "node_type": "Concept",
+      "label": "co-occurrence matrix",
+      "normalized_name": "co-occurrence_matrix",
+      "description": "Corpus-level statistical structure underlying GloVe embeddings, used as foundation for the projection framework",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:query-key-value_mechanism",
+      "node_type": "Concept",
+      "label": "query-key-value mechanism",
+      "normalized_name": "query-key-value_mechanism",
+      "description": "Asymmetric extension of projection principle for modeling directional relationships",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:positional_encodings",
+      "node_type": "Concept",
+      "label": "positional encodings",
+      "normalized_name": "positional_encodings",
+      "description": "Structured refinements of the projection principle within Transformer architecture",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:multi-head_attention",
+      "node_type": "Concept",
+      "label": "multi-head attention",
+      "normalized_name": "multi-head_attention",
+      "description": "Structured refinement of projection principle in the Transformer architecture",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:transformer_architecture",
+      "node_type": "Concept",
+      "label": "Transformer architecture",
+      "normalized_name": "transformer_architecture",
+      "description": "Architecture whose algebraic form is shown to follow from projection principles",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:co-occurrence_projection",
+      "node_type": "Method",
+      "label": "co-occurrence projection",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:multi-head_attention",
+      "node_type": "Method",
+      "label": "multi-head attention",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:positional_encoding",
+      "node_type": "Method",
+      "label": "positional encoding",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:glove_embeddings",
+      "node_type": "Method",
+      "label": "GloVe embeddings",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:glove_corpus",
+      "node_type": "Dataset",
+      "label": "GloVe corpus",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:co-occurrence_projection",
+      "node_type": "Concept",
+      "label": "co-occurrence projection",
+      "normalized_name": "co-occurrence_projection",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:glove_embeddings",
+      "node_type": "Concept",
+      "label": "GloVe embeddings",
+      "normalized_name": "glove_embeddings",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:random_feature_attention",
+      "node_type": "Concept",
+      "label": "Random Feature Attention",
+      "normalized_name": "random_feature_attention",
+      "description": "An efficient approximation of softmax attention with linear runtime and space complexity using random features.",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:control_variate_estimation",
+      "node_type": "Method",
+      "label": "Control Variate Estimation",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:softmax_attention_approximation",
+      "node_type": "Method",
+      "label": "Softmax Attention Approximation",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:snr_characterization",
+      "node_type": "Method",
+      "label": "SNR Characterization",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:self-attention",
+      "node_type": "Concept",
+      "label": "Self-Attention",
+      "normalized_name": "self-attention",
+      "description": "Mechanism interpreted as projection of corpus-level co-occurrence statistics into sequence context",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:co-occurrence_statistics",
+      "node_type": "Concept",
+      "label": "Co-occurrence Statistics",
+      "normalized_name": "co-occurrence_statistics",
+      "description": "Corpus-level statistics underlying GloVe embeddings used as basis for deriving self-attention",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:self-attention_projection",
+      "node_type": "Method",
+      "label": "Self-Attention Projection",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:co-occurrence_matrix_projection",
+      "node_type": "Method",
+      "label": "Co-occurrence Matrix Projection",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:glove_embeddings_corpus",
+      "node_type": "Dataset",
+      "label": "GloVe Embeddings Corpus",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:glove_embeddings_corpus",
+      "node_type": "Concept",
+      "label": "GloVe Embeddings Corpus",
+      "normalized_name": "glove_embeddings_corpus",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:linear_complexity",
+      "node_type": "Concept",
+      "label": "Linear Complexity",
+      "normalized_name": "linear_complexity",
+      "description": "Linear runtime and space complexity achieved by efficient attention mechanisms.",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:control_variate_estimators",
+      "node_type": "Method",
+      "label": "Control Variate Estimators",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:novel_attention_mechanism",
+      "node_type": "Method",
+      "label": "Novel Attention Mechanism",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:control_variate_estimators",
+      "node_type": "Concept",
+      "label": "Control Variate Estimators",
+      "normalized_name": "control_variate_estimators",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:novel_attention_mechanism",
+      "node_type": "Concept",
+      "label": "Novel Attention Mechanism",
+      "normalized_name": "novel_attention_mechanism",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:transformer_model",
+      "node_type": "Concept",
+      "label": "Transformer Model",
+      "normalized_name": "transformer_model",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:attention_token_selection",
+      "node_type": "Method",
+      "label": "Attention Token Selection",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:synthetic_datasets",
+      "node_type": "Dataset",
+      "label": "Synthetic Datasets",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:real-world_datasets",
+      "node_type": "Dataset",
+      "label": "Real-world Datasets",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:generalization_performance",
+      "node_type": "Concept",
+      "label": "Generalization Performance",
+      "normalized_name": "generalization_performance",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:classification_problems",
+      "node_type": "Concept",
+      "label": "Classification Problems",
+      "normalized_name": "classification_problems",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:self-attention_mechanism",
+      "node_type": "Method",
+      "label": "Self-Attention Mechanism",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:random-feature-based_attention",
+      "node_type": "Method",
+      "label": "Random-Feature-Based Attention",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:glove_embeddings",
+      "node_type": "Dataset",
+      "label": "GloVe Embeddings",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:self-attention_analysis",
+      "node_type": "Method",
+      "label": "Self-Attention Analysis",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:mathematical_interpretation_framework",
+      "node_type": "Method",
+      "label": "Mathematical Interpretation Framework",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:novel_control_variate_attention",
+      "node_type": "Method",
+      "label": "Novel Control Variate Attention",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:novel_control_variate_attention",
+      "node_type": "Concept",
+      "label": "Novel Control Variate Attention",
+      "normalized_name": "novel_control_variate_attention",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:transformer_attention_training",
+      "node_type": "Method",
+      "label": "Transformer Attention Training",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:theoretical_generalization_analysis",
+      "node_type": "Method",
+      "label": "Theoretical Generalization Analysis",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:synthetic_data_experiments",
+      "node_type": "Method",
+      "label": "Synthetic Data Experiments",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:real-world_data_experiments",
+      "node_type": "Method",
+      "label": "Real-world Data Experiments",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:query-key-value_attention",
+      "node_type": "Method",
+      "label": "Query-Key-Value Attention",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "paper:W2746350549",
+      "node_type": "Paper",
+      "label": "Skilling and deskilling: technological change in classical economic theory and its empirical evidence",
+      "arxiv_id": "W2746350549",
+      "title": "Skilling and deskilling: technological change in classical economic theory and its empirical evidence",
+      "authors": "[\"Florian Brugger\", \"Christian Gehrke\"]",
+      "abstract": "This article reviews and brings together two literatures: classical political economists\u2019 views on the skilling or deskilling nature of technological change in England, during the eighteenth and nineteenth centuries when they wrote, are compared with the empirical evidence about the skill effects of technological change that emerges from studies of economic historians. In both literatures, we look at both the skill impacts of technological change and at the \u201cinducement mechanisms\u201d that are envisaged for the introduction of new technologies. Adam Smith and Karl Marx both regarded the deskilling of the labour force as the predominant form of biased technical change, but other authors such as Charles Babbage also took account of capital-skill complementarities and skill-enhancing effects of technological change. For Smith, the deskilling bias was an unintended by-product of the increasing division of labour, which in his view \u201cnaturally\u201d led to ever more simplification of workers\u2019 tasks. As opposed to Smith, Marx considered unskilled-biased technical change as a bourgeois weapon in the class struggle for impairing the workers\u2019 bargaining position. Studies of economic historians lend support to Marx\u2019s hypothesis about the inducement mechanisms for the introduction of unskilled-biased innovations, but have produced no clear-cut empirical evidence for a deskilling tendency of eighteenth- and nineteenth-century technological change as a whole. Industrialization in the eighteenth and nineteenth centuries rather led to labour polarization, by simultaneously deskilling a large part of the workforce and raising the demand for some (but fewer) high-skilled workers.",
+      "published_date": "2018-09-12",
+      "first_seen_date": "2026-03-04",
+      "citation_count": 39
+    },
+    {
+      "id": "author:florian brugger",
+      "node_type": "Author",
+      "label": "Florian Brugger",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:christian gehrke",
+      "node_type": "Author",
+      "label": "Christian Gehrke",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:deskilling",
+      "node_type": "Concept",
+      "label": "Deskilling",
+      "normalized_name": "deskilling",
+      "description": "The process by which technological change reduces the skill requirements of workers' tasks",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:capital-skill_complementarity",
+      "node_type": "Concept",
+      "label": "Capital-skill complementarity",
+      "normalized_name": "capital-skill_complementarity",
+      "description": "The phenomenon where capital investment and skilled labour complement each other, raising demand for skilled workers",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:biased_technical_change",
+      "node_type": "Concept",
+      "label": "Biased technical change",
+      "normalized_name": "biased_technical_change",
+      "description": "Technological change that favours certain types of labour (skilled or unskilled) over others",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:labour_polarization",
+      "node_type": "Concept",
+      "label": "Labour polarization",
+      "normalized_name": "labour_polarization",
+      "description": "Simultaneous deskilling of a large part of the workforce while raising demand for some high-skilled workers",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:division_of_labour",
+      "node_type": "Concept",
+      "label": "Division of labour",
+      "normalized_name": "division_of_labour",
+      "description": "Increasing specialization of workers' tasks, seen by Smith as naturally leading to simplification and deskilling",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:inducement_mechanisms",
+      "node_type": "Concept",
+      "label": "Inducement mechanisms",
+      "normalized_name": "inducement_mechanisms",
+      "description": "The reasons or forces that drive the introduction of new technologies with particular skill biases",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:unskilled-biased_innovation",
+      "node_type": "Concept",
+      "label": "Unskilled-biased innovation",
+      "normalized_name": "unskilled-biased_innovation",
+      "description": "Technological innovations that reduce the relative demand for skilled labour",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:literature_review",
+      "node_type": "Method",
+      "label": "Literature review",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:historical_comparative_analysis",
+      "node_type": "Method",
+      "label": "Historical comparative analysis",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:empirical_historical_studies",
+      "node_type": "Method",
+      "label": "Empirical historical studies",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:economic_history_studies",
+      "node_type": "Dataset",
+      "label": "Economic history studies",
+      "first_seen_date": "2026-03-04",
+      "temporal_scope": "18th and 19th centuries"
+    },
+    {
+      "id": "dataset:classical_political_economy_texts",
+      "node_type": "Dataset",
+      "label": "Classical political economy texts",
+      "first_seen_date": "2026-03-04",
+      "temporal_scope": "18th and 19th centuries"
+    },
+    {
+      "id": "concept:bargaining_position_of_workers",
+      "node_type": "Concept",
+      "label": "Bargaining position of workers",
+      "normalized_name": "bargaining_position_of_workers",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:industrialization",
+      "node_type": "Concept",
+      "label": "Industrialization",
+      "normalized_name": "industrialization",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "paper:W3106095282",
+      "node_type": "Paper",
+      "label": "Understanding the Success of the Know-Nothing Party",
+      "arxiv_id": "W3106095282",
+      "title": "Understanding the Success of the Know-Nothing Party",
+      "authors": "[\"Marcella Alsan\", \"Kimmo Eriksson\", \"Gregory T. Niemesh\"]",
+      "abstract": "We study the contribution of economic conditions to the success of the first avowedly nativist political party in the United States.The Know-Nothing Party gained control of a number of state governments in the 1854-1856 elections running on a staunchly anti-Catholic and anti-Irish platform.Our analysis focuses on the case of Massachusetts, which had experienced a wave of Irish Famine immigration and was at the forefront of industrialization in the United States.Voters in towns with more exposure to Irish labor market crowdout and deskilling in manufacturing were more likely to vote for Know-Nothing candidates in state elections.These two forces played a decisive role in 1855, but not the other years of the Know Nothings' success.We find evidence of reduced wealth accumulation for native workers most exposed to labor market crowdout and deskilling, though this was tempered by occupational upgrading.",
+      "published_date": "2020-11-01",
+      "first_seen_date": "2026-03-04",
+      "citation_count": 20
+    },
+    {
+      "id": "author:marcella alsan",
+      "node_type": "Author",
+      "label": "Marcella Alsan",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:kimmo eriksson",
+      "node_type": "Author",
+      "label": "Kimmo Eriksson",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:gregory t. niemesh",
+      "node_type": "Author",
+      "label": "Gregory T. Niemesh",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:nativist_political_party",
+      "node_type": "Concept",
+      "label": "Nativist Political Party",
+      "normalized_name": "nativist_political_party",
+      "description": "Political party running on anti-immigrant platforms, specifically anti-Catholic and anti-Irish in the US mid-19th century",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:labor_market_crowdout",
+      "node_type": "Concept",
+      "label": "Labor Market Crowdout",
+      "normalized_name": "labor_market_crowdout",
+      "description": "Displacement of native workers from jobs due to influx of immigrant labor",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:manufacturing_deskilling",
+      "node_type": "Concept",
+      "label": "Manufacturing Deskilling",
+      "normalized_name": "manufacturing_deskilling",
+      "description": "Reduction in skill requirements for manufacturing jobs due to industrialization or labor substitution",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:irish_famine_immigration",
+      "node_type": "Concept",
+      "label": "Irish Famine Immigration",
+      "normalized_name": "irish_famine_immigration",
+      "description": "Wave of Irish immigrants to the US driven by the Great Famine in Ireland",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:occupational_upgrading",
+      "node_type": "Concept",
+      "label": "Occupational Upgrading",
+      "normalized_name": "occupational_upgrading",
+      "description": "Native workers moving to higher-skilled or better-paid occupations in response to immigrant competition",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:wealth_accumulation",
+      "node_type": "Concept",
+      "label": "Wealth Accumulation",
+      "normalized_name": "wealth_accumulation",
+      "description": "Accumulation of wealth by native workers, found to be reduced by labor market exposure to immigrants",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:electoral_vote_analysis",
+      "node_type": "Method",
+      "label": "Electoral vote analysis",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:labor_market_exposure_measurement",
+      "node_type": "Method",
+      "label": "Labor market exposure measurement",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:wealth_accumulation_analysis",
+      "node_type": "Method",
+      "label": "Wealth accumulation analysis",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:town-level_regression_analysis",
+      "node_type": "Method",
+      "label": "Town-level regression analysis",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:massachusetts_state_elections",
+      "node_type": "Dataset",
+      "label": "Massachusetts State Elections",
+      "first_seen_date": "2026-03-04",
+      "temporal_scope": "1854-1856"
+    },
+    {
+      "id": "dataset:know-nothing_voting_returns",
+      "node_type": "Dataset",
+      "label": "Know-Nothing Voting Returns",
+      "first_seen_date": "2026-03-04",
+      "temporal_scope": "1854-1856"
+    },
+    {
+      "id": "paper:W4200525695",
+      "node_type": "Paper",
+      "label": "Technology, Vintage-Specific Human Capital, and Labor Displacement: Evidence from Linking Patents with Occupations",
+      "arxiv_id": "W4200525695",
+      "title": "Technology, Vintage-Specific Human Capital, and Labor Displacement: Evidence from Linking Patents with Occupations",
+      "authors": "[\"Leonid Kogan\", \"Dimitris Papanikolaou\", \"Lawrence Schmidt\", \"Bryan Seegmiller\"]",
+      "abstract": "We develop a measure of workers' technology exposure that relies only on textual descriptions of patent documents and the tasks performed by workers in an occupation.Our measure appears to identify a combination of labor-saving innovations but also technologies that may require skills that incumbent workers lack.Using a panel of administrative data, we examine how subsequent worker earnings relate to workers' technology exposure.We find that workers at both the bottom but also the top of the earnings distribution are displaced.Our interpretation is that low-paid workers are displaced as their tasks are automated while the highest-paid workers face lower earnings growth as some of their skills become obsolete.Our calibrated model fits these facts and emphasizes the importance of movements in skill quantities, not just skill prices, for the link between technology and inequality.",
+      "published_date": "2021-12-01",
+      "first_seen_date": "2026-03-04",
+      "citation_count": 22
+    },
+    {
+      "id": "author:leonid kogan",
+      "node_type": "Author",
+      "label": "Leonid Kogan",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:dimitris papanikolaou",
+      "node_type": "Author",
+      "label": "Dimitris Papanikolaou",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:lawrence schmidt",
+      "node_type": "Author",
+      "label": "Lawrence Schmidt",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "author:bryan seegmiller",
+      "node_type": "Author",
+      "label": "Bryan Seegmiller",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:technology_exposure_measure",
+      "node_type": "Concept",
+      "label": "Technology exposure measure",
+      "normalized_name": "technology_exposure_measure",
+      "description": "A measure based on textual descriptions of patent documents and occupational task descriptions to quantify workers' exposure to new technologies",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:labor-saving_innovations",
+      "node_type": "Concept",
+      "label": "Labor-saving innovations",
+      "normalized_name": "labor-saving_innovations",
+      "description": "Technologies that reduce the need for human labor in performing certain tasks",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:skill_obsolescence",
+      "node_type": "Concept",
+      "label": "Skill obsolescence",
+      "normalized_name": "skill_obsolescence",
+      "description": "Process by which incumbent workers' existing skills become less valuable due to new technologies",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:task_automation",
+      "node_type": "Concept",
+      "label": "Task automation",
+      "normalized_name": "task_automation",
+      "description": "Replacement of worker tasks by automated technologies, particularly affecting low-paid workers",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:earnings_displacement",
+      "node_type": "Concept",
+      "label": "Earnings displacement",
+      "normalized_name": "earnings_displacement",
+      "description": "Reduction in worker earnings resulting from technology exposure, affecting both bottom and top earners",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:skill_quantities_vs_prices",
+      "node_type": "Concept",
+      "label": "Skill quantities vs prices",
+      "normalized_name": "skill_quantities_vs_prices",
+      "description": "Distinction between the amounts of skills in the labor market and their market prices as drivers of inequality",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:text-based_patent_matching",
+      "node_type": "Method",
+      "label": "Text-based patent matching",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:administrative_panel_data_analysis",
+      "node_type": "Method",
+      "label": "Administrative panel data analysis",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "method:calibrated_economic_model",
+      "node_type": "Method",
+      "label": "Calibrated economic model",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:patent_documents",
+      "node_type": "Dataset",
+      "label": "Patent documents",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:administrative_earnings_panel",
+      "node_type": "Dataset",
+      "label": "Administrative earnings panel",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "dataset:occupational_task_descriptions",
+      "node_type": "Dataset",
+      "label": "Occupational task descriptions",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:patent_documents",
+      "node_type": "Concept",
+      "label": "Patent documents",
+      "normalized_name": "patent_documents",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    },
+    {
+      "id": "concept:technology_and_inequality",
+      "node_type": "Concept",
+      "label": "Technology and inequality",
+      "normalized_name": "technology_and_inequality",
+      "description": "",
+      "first_seen_date": "2026-03-04"
+    }
+  ],
+  "links": [
+    {
+      "source": "paper:1706.03762",
+      "target": "author:ashish vaswani",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:1706.03762",
+      "target": "author:noam shazeer",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:1706.03762",
+      "target": "author:niki parmar",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:1706.03762",
+      "target": "concept:attention_mechanism",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:1706.03762",
+      "target": "method:self-attention",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "concept:attention_mechanism",
+      "target": "concept:token_selection",
+      "edge_type": "RELATED_TO",
+      "relationship": "performs"
+    },
+    {
+      "source": "concept:attention_mechanism",
+      "target": "concept:training_dynamics",
+      "edge_type": "RELATED_TO",
+      "relationship": "is analyzed via"
+    },
+    {
+      "source": "concept:attention_mechanism",
+      "target": "concept:transformer_model",
+      "edge_type": "RELATED_TO",
+      "relationship": "component of"
+    },
+    {
+      "source": "concept:attention_mechanism",
+      "target": "concept:classification_problems",
+      "edge_type": "RELATED_TO",
+      "relationship": "applied to"
+    },
+    {
+      "source": "paper:1810.04805",
+      "target": "author:jacob devlin",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:1810.04805",
+      "target": "author:ming-wei chang",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:1810.04805",
+      "target": "author:kenton lee",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:1810.04805",
+      "target": "author:kristina toutanova",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:1810.04805",
+      "target": "concept:attention_mechanism",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:1810.04805",
+      "target": "method:self-attention",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2005.14165",
+      "target": "author:tom b. brown",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:2005.14165",
+      "target": "author:benjamin mann",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:2005.14165",
+      "target": "author:nick ryder",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:2005.14165",
+      "target": "concept:attention_mechanism",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2005.14165",
+      "target": "method:self-attention",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "author:lin zheng",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "author:jianbo yuan",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "author:chong wang",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "author:lingpeng kong",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "concept:random-feature_attention",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "concept:softmax_attention",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "concept:control_variates",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "concept:approximation_gap",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "concept:linear_complexity_attention",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "method:random_feature_attention_(rfa)",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "method:control_variate_decomposition",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "method:softmax_attention_recovery",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "method:flexible_control_variates",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "dataset:vision_tasks_dataset",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "dataset:language_tasks_dataset",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "concept:random_feature_attention",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "method:control_variate_estimation",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "method:softmax_attention_approximation",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "concept:linear_complexity",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "method:control_variate_estimators",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "method:novel_attention_mechanism",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "method:random-feature-based_attention",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2302.04542",
+      "target": "method:novel_control_variate_attention",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "concept:random-feature_attention",
+      "target": "concept:softmax_attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "approximates"
+    },
+    {
+      "source": "concept:random-feature_attention",
+      "target": "concept:control_variates",
+      "edge_type": "RELATED_TO",
+      "relationship": "decomposed into"
+    },
+    {
+      "source": "concept:control_variates",
+      "target": "concept:approximation_gap",
+      "edge_type": "RELATED_TO",
+      "relationship": "characterizes"
+    },
+    {
+      "source": "concept:control_variates",
+      "target": "concept:softmax_attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "recovers via manipulation"
+    },
+    {
+      "source": "concept:linear_complexity_attention",
+      "target": "concept:approximation_gap",
+      "edge_type": "RELATED_TO",
+      "relationship": "reduces"
+    },
+    {
+      "source": "concept:linear_complexity_attention",
+      "target": "concept:random_feature_attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "extends"
+    },
+    {
+      "source": "concept:control_variate_decomposition",
+      "target": "concept:random-feature_attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "decomposes"
+    },
+    {
+      "source": "concept:control_variate_decomposition",
+      "target": "concept:linear_complexity_attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "maintains"
+    },
+    {
+      "source": "concept:control_variate_decomposition",
+      "target": "concept:random_feature_attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "decomposes"
+    },
+    {
+      "source": "concept:control_variate_decomposition",
+      "target": "concept:softmax_attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "recovers exactly"
+    },
+    {
+      "source": "concept:softmax_attention_recovery",
+      "target": "concept:control_variates",
+      "edge_type": "RELATED_TO",
+      "relationship": "achieved by manipulating"
+    },
+    {
+      "source": "concept:flexible_control_variates",
+      "target": "concept:approximation_gap",
+      "edge_type": "RELATED_TO",
+      "relationship": "reduces"
+    },
+    {
+      "source": "concept:flexible_control_variates",
+      "target": "concept:linear_complexity_attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "maintains"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "author:keitaro sakamoto",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "author:issei sato",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "concept:attention_mechanism",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "concept:benign_overfitting",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "concept:signal-to-noise_ratio",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "concept:token_selection",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "concept:label_noise",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "concept:delayed_generalization",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "concept:training_dynamics",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "method:theoretical_analysis",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "method:synthetic_experiments",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "method:real-world_experiments",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "dataset:synthetic_dataset",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "dataset:real-world_dataset",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "method:snr_characterization",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "method:attention_token_selection",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "dataset:synthetic_datasets",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "dataset:real-world_datasets",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "method:transformer_attention_training",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "method:theoretical_generalization_analysis",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "method:synthetic_data_experiments",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2409.17625",
+      "target": "method:real-world_data_experiments",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "concept:benign_overfitting",
+      "target": "concept:delayed_generalization",
+      "edge_type": "RELATED_TO",
+      "relationship": "precedes"
+    },
+    {
+      "source": "concept:benign_overfitting",
+      "target": "concept:generalization_performance",
+      "edge_type": "RELATED_TO",
+      "relationship": "maintains"
+    },
+    {
+      "source": "concept:signal-to-noise_ratio",
+      "target": "concept:token_selection",
+      "edge_type": "RELATED_TO",
+      "relationship": "characterizes"
+    },
+    {
+      "source": "concept:token_selection",
+      "target": "concept:benign_overfitting",
+      "edge_type": "RELATED_TO",
+      "relationship": "achieves"
+    },
+    {
+      "source": "concept:label_noise",
+      "target": "concept:benign_overfitting",
+      "edge_type": "RELATED_TO",
+      "relationship": "is fitted by"
+    },
+    {
+      "source": "concept:label_noise",
+      "target": "concept:training_dynamics",
+      "edge_type": "RELATED_TO",
+      "relationship": "influences"
+    },
+    {
+      "source": "concept:delayed_generalization",
+      "target": "concept:benign_overfitting",
+      "edge_type": "RELATED_TO",
+      "relationship": "related to"
+    },
+    {
+      "source": "concept:training_dynamics",
+      "target": "concept:delayed_generalization",
+      "edge_type": "RELATED_TO",
+      "relationship": "exhibits"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "author:nihal mehta",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "concept:self-attention_mechanism",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "concept:distributional_semantics",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "concept:co-occurrence_matrix",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "concept:query-key-value_mechanism",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "concept:positional_encodings",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "concept:multi-head_attention",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "concept:transformer_architecture",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "method:co-occurrence_projection",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "method:self-attention",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "method:multi-head_attention",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "method:positional_encoding",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "method:glove_embeddings",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "dataset:glove_corpus",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "concept:self-attention",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "concept:co-occurrence_statistics",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "method:self-attention_projection",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "method:co-occurrence_matrix_projection",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "dataset:glove_embeddings_corpus",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "method:self-attention_mechanism",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "dataset:glove_embeddings",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "method:self-attention_analysis",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "method:mathematical_interpretation_framework",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:2511.13780",
+      "target": "method:query-key-value_attention",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "concept:self-attention_mechanism",
+      "target": "concept:distributional_semantics",
+      "edge_type": "RELATED_TO",
+      "relationship": "interpreted via"
+    },
+    {
+      "source": "concept:distributional_semantics",
+      "target": "concept:self-attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "provides mathematical interpretation of"
+    },
+    {
+      "source": "concept:co-occurrence_matrix",
+      "target": "concept:self-attention_mechanism",
+      "edge_type": "RELATED_TO",
+      "relationship": "projects into"
+    },
+    {
+      "source": "concept:co-occurrence_matrix",
+      "target": "concept:self-attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "projected into sequence context to yield"
+    },
+    {
+      "source": "concept:query-key-value_mechanism",
+      "target": "concept:co-occurrence_matrix",
+      "edge_type": "RELATED_TO",
+      "relationship": "asymmetric extension of projection from"
+    },
+    {
+      "source": "concept:query-key-value_mechanism",
+      "target": "concept:co-occurrence_statistics",
+      "edge_type": "RELATED_TO",
+      "relationship": "asymmetric extension of projection of"
+    },
+    {
+      "source": "concept:query-key-value_mechanism",
+      "target": "concept:self-attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "is asymmetric extension of"
+    },
+    {
+      "source": "concept:query-key-value_mechanism",
+      "target": "concept:distributional_semantics",
+      "edge_type": "RELATED_TO",
+      "relationship": "models directional relationships from"
+    },
+    {
+      "source": "concept:positional_encodings",
+      "target": "concept:co-occurrence_projection",
+      "edge_type": "RELATED_TO",
+      "relationship": "structured refinement of"
+    },
+    {
+      "source": "concept:positional_encodings",
+      "target": "concept:query-key-value_mechanism",
+      "edge_type": "RELATED_TO",
+      "relationship": "structured refinement of"
+    },
+    {
+      "source": "concept:positional_encodings",
+      "target": "concept:self-attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "structured refinement of"
+    },
+    {
+      "source": "concept:multi-head_attention",
+      "target": "concept:co-occurrence_projection",
+      "edge_type": "RELATED_TO",
+      "relationship": "structured refinement of"
+    },
+    {
+      "source": "concept:multi-head_attention",
+      "target": "concept:query-key-value_mechanism",
+      "edge_type": "RELATED_TO",
+      "relationship": "structured refinement of"
+    },
+    {
+      "source": "concept:multi-head_attention",
+      "target": "concept:self-attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "structured refinement of"
+    },
+    {
+      "source": "concept:transformer_architecture",
+      "target": "concept:co-occurrence_projection",
+      "edge_type": "RELATED_TO",
+      "relationship": "algebraic form follows from"
+    },
+    {
+      "source": "concept:transformer_architecture",
+      "target": "concept:co-occurrence_statistics",
+      "edge_type": "RELATED_TO",
+      "relationship": "algebraic form follows from projection of"
+    },
+    {
+      "source": "concept:transformer_architecture",
+      "target": "concept:distributional_semantics",
+      "edge_type": "RELATED_TO",
+      "relationship": "algebraic form follows from projection principles of"
+    },
+    {
+      "source": "concept:glove_embeddings",
+      "target": "concept:co-occurrence_matrix",
+      "edge_type": "RELATED_TO",
+      "relationship": "underlying representation of"
+    },
+    {
+      "source": "concept:glove_embeddings",
+      "target": "concept:co-occurrence_statistics",
+      "edge_type": "RELATED_TO",
+      "relationship": "is based on"
+    },
+    {
+      "source": "concept:random_feature_attention",
+      "target": "concept:softmax_attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "approximates"
+    },
+    {
+      "source": "concept:random_feature_attention",
+      "target": "concept:control_variates",
+      "edge_type": "RELATED_TO",
+      "relationship": "decomposed into"
+    },
+    {
+      "source": "concept:random_feature_attention",
+      "target": "concept:control_variate_estimators",
+      "edge_type": "RELATED_TO",
+      "relationship": "decomposes into"
+    },
+    {
+      "source": "concept:self-attention",
+      "target": "concept:distributional_semantics",
+      "edge_type": "RELATED_TO",
+      "relationship": "connected to via mathematical interpretation"
+    },
+    {
+      "source": "concept:self-attention",
+      "target": "concept:co-occurrence_statistics",
+      "edge_type": "RELATED_TO",
+      "relationship": "emerges from projection of"
+    },
+    {
+      "source": "concept:co-occurrence_statistics",
+      "target": "concept:self-attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "projects into sequence context to yield"
+    },
+    {
+      "source": "concept:co-occurrence_statistics",
+      "target": "concept:glove_embeddings_corpus",
+      "edge_type": "RELATED_TO",
+      "relationship": "underlies"
+    },
+    {
+      "source": "concept:co-occurrence_statistics",
+      "target": "concept:glove_embeddings",
+      "edge_type": "RELATED_TO",
+      "relationship": "underlies"
+    },
+    {
+      "source": "concept:glove_embeddings_corpus",
+      "target": "concept:co-occurrence_statistics",
+      "edge_type": "RELATED_TO",
+      "relationship": "underlies"
+    },
+    {
+      "source": "concept:glove_embeddings_corpus",
+      "target": "concept:co-occurrence_matrix",
+      "edge_type": "RELATED_TO",
+      "relationship": "underlies"
+    },
+    {
+      "source": "concept:control_variate_estimators",
+      "target": "concept:softmax_attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "recovers"
+    },
+    {
+      "source": "concept:novel_attention_mechanism",
+      "target": "concept:approximation_gap",
+      "edge_type": "RELATED_TO",
+      "relationship": "reduces"
+    },
+    {
+      "source": "concept:novel_attention_mechanism",
+      "target": "concept:linear_complexity",
+      "edge_type": "RELATED_TO",
+      "relationship": "maintains"
+    },
+    {
+      "source": "concept:novel_control_variate_attention",
+      "target": "concept:approximation_gap",
+      "edge_type": "RELATED_TO",
+      "relationship": "reduces"
+    },
+    {
+      "source": "concept:novel_control_variate_attention",
+      "target": "concept:linear_complexity_attention",
+      "edge_type": "RELATED_TO",
+      "relationship": "maintains"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "author:florian brugger",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "author:christian gehrke",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "concept:deskilling",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "concept:capital-skill_complementarity",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "concept:biased_technical_change",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "concept:labour_polarization",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "concept:division_of_labour",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "concept:inducement_mechanisms",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "concept:unskilled-biased_innovation",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "method:literature_review",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "method:historical_comparative_analysis",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "method:empirical_historical_studies",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "dataset:economic_history_studies",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:W2746350549",
+      "target": "dataset:classical_political_economy_texts",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "concept:capital-skill_complementarity",
+      "target": "concept:deskilling",
+      "edge_type": "RELATED_TO",
+      "relationship": "counteracts"
+    },
+    {
+      "source": "concept:biased_technical_change",
+      "target": "concept:unskilled-biased_innovation",
+      "edge_type": "RELATED_TO",
+      "relationship": "type includes"
+    },
+    {
+      "source": "concept:division_of_labour",
+      "target": "concept:deskilling",
+      "edge_type": "RELATED_TO",
+      "relationship": "naturally leads to"
+    },
+    {
+      "source": "concept:inducement_mechanisms",
+      "target": "concept:unskilled-biased_innovation",
+      "edge_type": "RELATED_TO",
+      "relationship": "drives introduction of"
+    },
+    {
+      "source": "concept:unskilled-biased_innovation",
+      "target": "concept:bargaining_position_of_workers",
+      "edge_type": "RELATED_TO",
+      "relationship": "impairs"
+    },
+    {
+      "source": "concept:industrialization",
+      "target": "concept:labour_polarization",
+      "edge_type": "RELATED_TO",
+      "relationship": "leads to"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "author:marcella alsan",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "author:kimmo eriksson",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "author:gregory t. niemesh",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "concept:nativist_political_party",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "concept:labor_market_crowdout",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "concept:manufacturing_deskilling",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "concept:irish_famine_immigration",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "concept:occupational_upgrading",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "concept:wealth_accumulation",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "method:electoral_vote_analysis",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "method:labor_market_exposure_measurement",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "method:wealth_accumulation_analysis",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "method:town-level_regression_analysis",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "dataset:massachusetts_state_elections",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:W3106095282",
+      "target": "dataset:know-nothing_voting_returns",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "concept:labor_market_crowdout",
+      "target": "concept:nativist_political_party",
+      "edge_type": "RELATED_TO",
+      "relationship": "increased support for"
+    },
+    {
+      "source": "concept:labor_market_crowdout",
+      "target": "concept:wealth_accumulation",
+      "edge_type": "RELATED_TO",
+      "relationship": "reduced"
+    },
+    {
+      "source": "concept:manufacturing_deskilling",
+      "target": "concept:nativist_political_party",
+      "edge_type": "RELATED_TO",
+      "relationship": "increased support for"
+    },
+    {
+      "source": "concept:manufacturing_deskilling",
+      "target": "concept:wealth_accumulation",
+      "edge_type": "RELATED_TO",
+      "relationship": "reduced"
+    },
+    {
+      "source": "concept:irish_famine_immigration",
+      "target": "concept:labor_market_crowdout",
+      "edge_type": "RELATED_TO",
+      "relationship": "caused"
+    },
+    {
+      "source": "concept:irish_famine_immigration",
+      "target": "concept:manufacturing_deskilling",
+      "edge_type": "RELATED_TO",
+      "relationship": "contributed to"
+    },
+    {
+      "source": "concept:occupational_upgrading",
+      "target": "concept:wealth_accumulation",
+      "edge_type": "RELATED_TO",
+      "relationship": "tempered negative effects on"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "author:leonid kogan",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "author:dimitris papanikolaou",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "author:lawrence schmidt",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "author:bryan seegmiller",
+      "edge_type": "CO_AUTHORED_BY"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "concept:technology_exposure_measure",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "concept:labor-saving_innovations",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "concept:skill_obsolescence",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "concept:task_automation",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "concept:earnings_displacement",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "concept:skill_quantities_vs_prices",
+      "edge_type": "STUDIES_CONCEPT"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "method:text-based_patent_matching",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "method:administrative_panel_data_analysis",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "method:calibrated_economic_model",
+      "edge_type": "USES_METHOD"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "dataset:patent_documents",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "dataset:administrative_earnings_panel",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "paper:W4200525695",
+      "target": "dataset:occupational_task_descriptions",
+      "edge_type": "APPLIED_TO_DATASET"
+    },
+    {
+      "source": "concept:technology_exposure_measure",
+      "target": "concept:patent_documents",
+      "edge_type": "RELATED_TO",
+      "relationship": "derived from"
+    },
+    {
+      "source": "concept:technology_exposure_measure",
+      "target": "concept:earnings_displacement",
+      "edge_type": "RELATED_TO",
+      "relationship": "predicts"
+    },
+    {
+      "source": "concept:skill_obsolescence",
+      "target": "concept:earnings_displacement",
+      "edge_type": "RELATED_TO",
+      "relationship": "causes for high-paid workers"
+    },
+    {
+      "source": "concept:task_automation",
+      "target": "concept:labor-saving_innovations",
+      "edge_type": "RELATED_TO",
+      "relationship": "type of"
+    },
+    {
+      "source": "concept:task_automation",
+      "target": "concept:earnings_displacement",
+      "edge_type": "RELATED_TO",
+      "relationship": "causes for low-paid workers"
+    },
+    {
+      "source": "concept:skill_quantities_vs_prices",
+      "target": "concept:technology_and_inequality",
+      "edge_type": "RELATED_TO",
+      "relationship": "explains link between"
+    }
+  ]
+}
