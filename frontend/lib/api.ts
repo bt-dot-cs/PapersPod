@@ -54,6 +54,29 @@ export interface CreateEpisodeResult {
   status: string
 }
 
+export interface CostEvent {
+  episode_id: string
+  created_at?: string
+  topic?: string
+  source?: string
+  expertise_level?: string
+  max_papers?: number
+  anchor_paper?: string
+  tokens_input?: number
+  tokens_output?: number
+  cost_claude_input?: number
+  cost_claude_output?: number
+  cost_claude?: number
+  cost_tts?: number
+  cost_total?: number
+  tts_provider_requested?: string
+  tts_provider_used?: string
+  tts_fallback_occurred?: boolean
+  tts_characters?: number
+  runtime_seconds?: number
+  warnings?: unknown
+}
+
 export const api = {
   listEpisodes:  (token?: string | null) => req<Episode[]>('/episodes', token),
   getEpisode:    (id: string, token?: string | null) => req<Episode>(`/episodes/${id}`, token),
@@ -65,6 +88,8 @@ export const api = {
   getLibrary:    () => req<LibraryEpisode[]>('/episodes/library'),
   getRelated:    (id: string) => req<LibraryEpisode[]>(`/episodes/${id}/related`),
   getPapers:     (id: string) => req<Paper[]>(`/episodes/${id}/papers`),
+  getAdminCostEvents: (token: string, limit = 50) =>
+    req<CostEvent[]>(`/admin/cost-events?limit=${limit}`, token),
   recordPlayEvent: (event: {
     episode_id: string
     event_type: string
