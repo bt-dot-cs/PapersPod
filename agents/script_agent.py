@@ -34,8 +34,9 @@ HOST B (Jordan): Curious generalist. Asks clarifying questions, draws out implic
 
 Rules:
 - 800–1200 words total (approximately 6–8 minutes of audio)
-- Alex must open by introducing himself and Jordan by name ("I'm Alex, and this is Jordan") before the hook
-- Open with a hook that establishes why this topic matters right now
+- Alex must open his first turn with "Welcome to PapersPod" and introduce himself by name; he may then either (a) introduce the topic and note that Jordan is with him, or (b) introduce Jordan by name and then the topic
+- Jordan must name herself or confirm her presence by name in her first turn (e.g. "I'm Jordan" or "And I'm Jordan")
+- Both hosts named, show title said, and topic established within the first two turns — then open with a hook
 - Cover all {n_papers} papers but weave them into a narrative, not a list
 - Include at least one moment of "this paper actually contradicts what other work found"
 - Close with what questions remain open
