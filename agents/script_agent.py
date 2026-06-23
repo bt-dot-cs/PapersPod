@@ -4,9 +4,9 @@ from pathlib import Path
 
 import anthropic
 
-from core.config import ANTHROPIC_API_KEY, CLAUDE_MODEL, DATA_DIR
+from core.config import ANTHROPIC_API_KEY, CLAUDE_MODEL, COMMERCIAL_MODE, DATA_DIR
 from core.knowledge_graph import KnowledgeGraph
-from core.models import DialogueTurn, ExpertiseLevel, Paper, PodcastScript, QueryParameters
+from core.models import DialogueTurn, ExpertiseLevel, Paper, PodcastScript, QueryParameters, TokenUsage
 
 logger = logging.getLogger(__name__)
 
@@ -34,18 +34,26 @@ HOST B (Jordan): Curious generalist. Asks clarifying questions, draws out implic
 
 Rules:
 - 800–1200 words total (approximately 6–8 minutes of audio)
+- Alex must open by introducing himself and Jordan by name ("I'm Alex, and this is Jordan") before the hook
 - Open with a hook that establishes why this topic matters right now
 - Cover all {n_papers} papers but weave them into a narrative, not a list
 - Include at least one moment of "this paper actually contradicts what other work found"
 - Close with what questions remain open
 - Adapt depth to expertise level: {expertise_description}
+- Synthesize and explain ideas in your own words — never reproduce verbatim sentences or passages from the source papers
 - Format each turn as a JSON object on its own line (no array brackets, no commas between objects)
+- For each turn include "paper_refs": a list of arXiv IDs (from the bracketed IDs in PAPERS DISCUSSED above) that are primarily discussed in that turn — use an empty list if the turn is not about a specific paper
 
 Return ONLY a JSON array of turns:
-[{{"host": "A", "text": "..."}}, {{"host": "B", "text": "..."}}, ...]
+[{{"host": "A", "text": "...", "paper_refs": ["2301.12345"]}}, {{"host": "B", "text": "...", "paper_refs": []}}, ...]
 
 No preamble, no explanation, just the JSON array.\
 """
+
+_DISCLAIMER_TEXT = (
+    "The following is an AI-generated interpretation of peer-reviewed research. "
+    "For verified data, consult the original publications linked in the show notes."
+)
 
 _EXPERTISE_DESCRIPTIONS = {
     ExpertiseLevel.novice: (
@@ -77,7 +85,7 @@ def _summarize_papers(papers: list[Paper]) -> str:
     for i, p in enumerate(papers, 1):
         tldr = p.s2_tldr or "No summary available."
         lines.append(
-            f"{i}. {p.title} ({p.published_date.year})\n"
+            f"{i}. [{p.arxiv_id}] {p.title} ({p.published_date.year})\n"
             f"   Authors: {', '.join(p.authors[:3])}\n"
             f"   Citations: {p.citation_count or 'N/A'}\n"
             f"   Summary: {tldr}"
@@ -120,9 +128,16 @@ def _parse_turns(raw: str) -> list[DialogueTurn]:
     if raw.startswith("```"):
         lines = raw.split("\n")
         raw = "\n".join(lines[1:-1] if lines[-1].strip() == "```" else lines[1:])
+    def _turn(t: dict) -> DialogueTurn:
+        return DialogueTurn(
+            host=_normalize_host(t["host"]),
+            text=t["text"],
+            paper_refs=t.get("paper_refs") or [],
+        )
+
     try:
         turns_data = json.loads(raw)
-        return [DialogueTurn(host=_normalize_host(t["host"]), text=t["text"]) for t in turns_data]
+        return [_turn(t) for t in turns_data]
     except (json.JSONDecodeError, KeyError) as exc:
         logger.error("Script parse error: %s — attempting line-by-line fallback", exc)
         turns = []
@@ -132,7 +147,7 @@ def _parse_turns(raw: str) -> list[DialogueTurn]:
                 continue
             try:
                 obj = json.loads(line)
-                turns.append(DialogueTurn(host=_normalize_host(obj["host"]), text=obj["text"]))
+                turns.append(_turn(obj))
             except Exception:
                 continue
         return turns
@@ -144,7 +159,7 @@ async def run(
     graph: KnowledgeGraph,
     query: QueryParameters,
     episode_id: str,
-) -> PodcastScript:
+) -> tuple[PodcastScript, TokenUsage]:
     """Generate a two-host podcast script and save to disk."""
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
     level = _get_expertise_level(query)
@@ -176,10 +191,15 @@ async def run(
         max_tokens=4096,
         messages=[{"role": "user", "content": prompt}],
     )
+    usage = TokenUsage(response.usage.input_tokens, response.usage.output_tokens)
 
     turns = _parse_turns(response.content[0].text)
     if not turns:
         raise RuntimeError("ScriptAgent: received empty or unparseable script from Claude")
+
+    if COMMERCIAL_MODE:
+        turns = [DialogueTurn(host="A", text=_DISCLAIMER_TEXT)] + turns
+        logger.info("ScriptAgent: disclaimer turn prepended (commercial mode)")
 
     title = f"{query.topic.title()} — PapersPod"
     script = PodcastScript(
@@ -198,6 +218,8 @@ async def run(
     # Save human-readable Markdown
     md_path = DATA_DIR / "scripts" / f"{episode_id}.md"
     md_lines = [f"# {title}", ""]
+    if COMMERCIAL_MODE:
+        md_lines += [f"> {_DISCLAIMER_TEXT}", ""]
     for turn in turns:
         host_name = "Alex" if turn.host == "A" else "Jordan"
         md_lines.append(f"**{host_name}:** {turn.text}")
@@ -205,4 +227,4 @@ async def run(
     md_path.write_text("\n".join(md_lines), encoding="utf-8")
 
     logger.info("ScriptAgent: script has %d turns, saved to %s", len(turns), json_path)
-    return script
+    return script, usage
