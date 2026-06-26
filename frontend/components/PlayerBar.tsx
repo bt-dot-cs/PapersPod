@@ -10,7 +10,7 @@ function fmtTime(seconds: number): string {
 }
 
 export default function PlayerBar() {
-  const { episodeId, topic, playing, progress, duration, togglePlay, seek, toggleNowOpen } = useAudio()
+  const { episodeId, topic, playing, progress, duration, audioError, togglePlay, seek, toggleNowOpen } = useAudio()
 
   if (!episodeId) {
     return (
@@ -45,6 +45,9 @@ export default function PlayerBar() {
 
       {/* Transport + seek */}
       <div className="flex-1 flex flex-col items-center gap-1.5 min-w-0">
+        {audioError && (
+          <p className="text-xs" style={{ color: 'var(--error, #e05c5c)' }}>{audioError}</p>
+        )}
         <button
           onClick={togglePlay}
           aria-label={playing ? 'Pause' : 'Play'}

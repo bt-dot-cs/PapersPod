@@ -23,6 +23,7 @@ interface AudioCtxValue {
   duration: number             // seconds
   nowOpen: boolean             // NowPlayingOverlay open
   segments: EpisodeSegment[]   // time-coded paper refs (populated after load)
+  audioError: string | null    // set when audio fails to load or play
   load: (episodeId: string, audioUrl: string, topic?: string, segments?: EpisodeSegment[]) => void
   togglePlay: () => void
   seek: (pct: number) => void
@@ -40,6 +41,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [duration, setDuration]     = useState(0)
   const [nowOpen, setNowOpen]       = useState(false)
   const [segments, setSegments]     = useState<EpisodeSegment[]>([])
+  const [audioError, setAudioError] = useState<string | null>(null)
 
   const load = useCallback((eid: string, url: string, t?: string, segs?: EpisodeSegment[]) => {
     const audio = audioRef.current
@@ -56,6 +58,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     setProgress(0)
     setDuration(0)
     setSegments(segs ?? [])
+    setAudioError(null)
   }, [episodeId, playing])
 
   const togglePlay = useCallback(() => {
@@ -98,8 +101,22 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     setProgress(audio.currentTime / audio.duration)
   }
 
+  function handleAudioError(e: React.SyntheticEvent<HTMLAudioElement>) {
+    const mediaErr = (e.target as HTMLAudioElement).error
+    const msg = mediaErr
+      ? ({
+          1: 'Playback aborted.',
+          2: 'Network error loading audio.',
+          3: 'Audio decoding failed.',
+          4: 'Audio format not supported.',
+        }[mediaErr.code] ?? 'Unknown audio error.')
+      : 'Failed to load audio.'
+    setPlaying(false)
+    setAudioError(msg)
+  }
+
   return (
-    <AudioCtx.Provider value={{ episodeId, topic, playing, progress, duration, nowOpen, segments, load, togglePlay, seek, toggleNowOpen }}>
+    <AudioCtx.Provider value={{ episodeId, topic, playing, progress, duration, nowOpen, segments, audioError, load, togglePlay, seek, toggleNowOpen }}>
       {children}
       <audio
         ref={audioRef}
@@ -109,6 +126,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         onTimeUpdate={handleTimeUpdate}
         onDurationChange={() => setDuration(audioRef.current?.duration ?? 0)}
         onEnded={() => { setPlaying(false); setProgress(1); fireEvent('complete', episodeId) }}
+        onError={handleAudioError}
       />
     </AudioCtx.Provider>
   )
