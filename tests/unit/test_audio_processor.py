@@ -51,10 +51,11 @@ def test_stitch_episode_output_exists(tmp_path: Path):
     seg2 = _make_segment_file(tmp_path, "seg2.mp3", 300)
     output = tmp_path / "output" / "episode.mp3"
 
-    result = stitch_episode([seg1, seg2], output)
+    result_path, timings = stitch_episode([seg1, seg2], output)
 
-    assert result == output
+    assert result_path == output
     assert output.exists()
+    assert len(timings) == 2
 
 
 def test_stitch_episode_longer_than_inputs(tmp_path: Path):

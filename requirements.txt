@@ -22,6 +22,16 @@ lxml
 fastapi
 uvicorn[standard]
 python-multipart
+PyJWT[crypto]            # Clerk JWT verification
+
+# Database (Neon Postgres)
+psycopg[binary]
+
+# Job queue (Postgres-backed, no Redis required)
+procrastinate[psycopg]
+
+# Object storage (Cloudflare R2 via S3-compatible API)
+boto3
 
 # Distribution (Phase 4)
 feedgen

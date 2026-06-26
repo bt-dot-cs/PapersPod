@@ -8,6 +8,7 @@ import arxiv
 import anthropic
 
 from core.config import ANTHROPIC_API_KEY, ARXIV_RATE_LIMIT_SECONDS, CLAUDE_MODEL
+from core.license_utils import normalize_license
 from core.models import Paper, QueryParameters
 
 logger = logging.getLogger(__name__)
@@ -36,7 +37,7 @@ If no specific data period is mentioned, return {{"start_year": null, "end_year"
 Abstract: {abstract}"""
 
 
-def _build_search_query(query: QueryParameters) -> str:
+def build_search_query(query: QueryParameters) -> str:
     """Combine topic, discipline category codes, and date range into an arXiv query string."""
     parts = [query.topic]
     categories = []
@@ -53,6 +54,11 @@ def _build_search_query(query: QueryParameters) -> str:
 def _map_result_to_paper(result: arxiv.Result) -> Paper:
     """Map an arxiv.Result object to a Paper model."""
     arxiv_id = result.entry_id.split("/abs/")[-1].split("v")[0]
+    license_str = "unknown"
+    for link in result.links:
+        if getattr(link, "rel", "") == "license":
+            license_str = normalize_license(str(link.href))
+            break
     return Paper(
         arxiv_id=arxiv_id,
         title=result.title,
@@ -60,6 +66,8 @@ def _map_result_to_paper(result: arxiv.Result) -> Paper:
         abstract=result.summary,
         published_date=result.published.date(),
         pdf_url=result.pdf_url,
+        doi=result.doi or None,
+        license=license_str,
     )
 
 
@@ -97,13 +105,13 @@ async def _extract_study_period(
 
 async def fetch_papers(query: QueryParameters) -> list[Paper]:
     """Query arXiv and return a list of Paper models matching the query parameters."""
-    search_query = _build_search_query(query)
+    search_query = build_search_query(query)
     logger.info("arXiv search query: %s", search_query)
 
     client_arxiv = arxiv.Client()
     search = arxiv.Search(
         query=search_query,
-        max_results=max(query.max_papers * 20, 50),
+        max_results=max(query.max_papers * 3, 15),
         sort_by=arxiv.SortCriterion.Relevance,
     )
 
@@ -133,9 +141,6 @@ async def fetch_papers(query: QueryParameters) -> list[Paper]:
 
         papers.append(paper)
         logger.info("Fetched paper: %s", paper.arxiv_id)
-
-        if len(papers) >= query.max_papers:
-            break
 
         await asyncio.sleep(ARXIV_RATE_LIMIT_SECONDS)
 

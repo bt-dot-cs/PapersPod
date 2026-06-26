@@ -6,6 +6,7 @@ from typing import Optional
 import httpx
 
 from core.config import OPENALEX_EMAIL, OPENALEX_RATE_LIMIT_SECONDS
+from core.license_utils import normalize_license
 from core.models import Paper, QueryParameters
 
 logger = logging.getLogger(__name__)
@@ -86,6 +87,12 @@ def _map_result_to_paper(work: dict) -> Optional[Paper]:
     primary = work.get("primary_location") or {}
     pdf_url = oa_url or primary.get("pdf_url")
 
+    oa_info = work.get("open_access") or {}
+    license_str = normalize_license(oa_info.get("license") or "")
+
+    doi_raw = ids.get("doi") or ""
+    doi = doi_raw.replace("https://doi.org/", "").replace("http://doi.org/", "") or None
+
     return Paper(
         arxiv_id=arxiv_id,
         openalex_id=openalex_work_id,
@@ -94,7 +101,9 @@ def _map_result_to_paper(work: dict) -> Optional[Paper]:
         abstract=abstract,
         published_date=published_date,
         pdf_url=pdf_url,
+        doi=doi,
         citation_count=work.get("cited_by_count"),
+        license=license_str,
     )
 
 

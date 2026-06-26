@@ -1,0 +1,17 @@
+.git/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.DS_Store
+data/audio/
+data/papers/
+data/graphs/
+data/bibliographies/
+data/scripts/
+data/traces/
+*.mp3
+sessions/
+logs/
+tests/

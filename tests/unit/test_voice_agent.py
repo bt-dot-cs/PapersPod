@@ -43,7 +43,8 @@ async def test_voice_agent_generates_segments(tmp_path: Path):
     mp3_bytes = _make_mp3_bytes()
 
     with patch("agents.voice_agent._synthesize", new_callable=AsyncMock, return_value=mp3_bytes), \
-         patch("agents.voice_agent.DATA_DIR", tmp_path):
+         patch("agents.voice_agent.DATA_DIR", tmp_path), \
+         patch("agents.voice_agent.shutil.rmtree"):
         from agents.voice_agent import run
         await run(script)
 
@@ -61,11 +62,11 @@ async def test_voice_agent_returns_episode_path(tmp_path: Path):
     with patch("agents.voice_agent._synthesize", new_callable=AsyncMock, return_value=mp3_bytes), \
          patch("agents.voice_agent.DATA_DIR", tmp_path):
         from agents.voice_agent import run
-        result = await run(script)
+        result_path, _chars, _provider, _segments = await run(script)
 
     expected = tmp_path / "audio" / f"{script.episode_id}.mp3"
-    assert result == expected
-    assert result.exists()
+    assert result_path == expected
+    assert result_path.exists()
 
 
 @pytest.mark.asyncio
@@ -74,23 +75,20 @@ async def test_voice_agent_correct_voice_per_host(tmp_path: Path):
     import importlib
     import agents.voice_agent as va
 
-    with patch("agents.voice_agent.VOICE_PROVIDER", "elevenlabs"), \
-         patch("agents.voice_agent.ELEVENLABS_VOICE_A_ID", "el-voice-a"), \
+    with patch("agents.voice_agent.ELEVENLABS_VOICE_A_ID", "el-voice-a"), \
          patch("agents.voice_agent.ELEVENLABS_VOICE_B_ID", "el-voice-b"):
-        assert va._voice_id("A") == "el-voice-a"
-        assert va._voice_id("B") == "el-voice-b"
+        assert va._voice_id("A", "elevenlabs") == "el-voice-a"
+        assert va._voice_id("B", "elevenlabs") == "el-voice-b"
 
-    with patch("agents.voice_agent.VOICE_PROVIDER", "openai"), \
-         patch("agents.voice_agent.OPENAI_TTS_VOICE_A", "nova"), \
+    with patch("agents.voice_agent.OPENAI_TTS_VOICE_A", "nova"), \
          patch("agents.voice_agent.OPENAI_TTS_VOICE_B", "onyx"):
-        assert va._voice_id("A") == "nova"
-        assert va._voice_id("B") == "onyx"
+        assert va._voice_id("A", "openai") == "nova"
+        assert va._voice_id("B", "openai") == "onyx"
 
-    with patch("agents.voice_agent.VOICE_PROVIDER", "google"), \
-         patch("agents.voice_agent.GOOGLE_TTS_VOICE_A", "en-US-Neural2-F"), \
+    with patch("agents.voice_agent.GOOGLE_TTS_VOICE_A", "en-US-Neural2-F"), \
          patch("agents.voice_agent.GOOGLE_TTS_VOICE_B", "en-US-Neural2-D"):
-        assert va._voice_id("A") == "en-US-Neural2-F"
-        assert va._voice_id("B") == "en-US-Neural2-D"
+        assert va._voice_id("A", "google") == "en-US-Neural2-F"
+        assert va._voice_id("B", "google") == "en-US-Neural2-D"
 
 
 @pytest.mark.asyncio
@@ -104,7 +102,7 @@ async def test_voice_agent_segments_in_order(tmp_path: Path):
         captured_paths.extend(segment_paths)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_bytes(mp3_bytes)
-        return output_path
+        return output_path, [(0.0, 0.2)] * len(segment_paths)
 
     with patch("agents.voice_agent._synthesize", new_callable=AsyncMock, return_value=mp3_bytes), \
          patch("agents.voice_agent.DATA_DIR", tmp_path), \

@@ -5,7 +5,7 @@ import anthropic
 
 from core.config import ANTHROPIC_API_KEY, CLAUDE_MODEL
 from core.knowledge_graph import KnowledgeGraph
-from core.models import Paper
+from core.models import Paper, TokenUsage
 
 logger = logging.getLogger(__name__)
 
@@ -41,9 +41,10 @@ def _safe_parse_json(text: str) -> dict:
         return {}
 
 
-async def run(papers: list[Paper], episode_id: str, graph: KnowledgeGraph) -> KnowledgeGraph:
+async def run(papers: list[Paper], episode_id: str, graph: KnowledgeGraph) -> tuple[KnowledgeGraph, TokenUsage]:
     """Extract entities/relationships from papers and update the knowledge graph."""
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    usage = TokenUsage()
 
     for paper in papers:
         logger.info("GraphAgent: processing paper %s", paper.arxiv_id)
@@ -65,6 +66,7 @@ async def run(papers: list[Paper], episode_id: str, graph: KnowledgeGraph) -> Kn
                 "content": _EXTRACT_PROMPT.format(abstract=paper.abstract),
             }],
         )
+        usage += TokenUsage(response.usage.input_tokens, response.usage.output_tokens)
         data = _safe_parse_json(response.content[0].text)
 
         # Add concepts
@@ -113,4 +115,4 @@ async def run(papers: list[Paper], episode_id: str, graph: KnowledgeGraph) -> Kn
 
     graph.save()
     logger.info("GraphAgent: graph has %d nodes", graph._graph.number_of_nodes())
-    return graph
+    return graph, usage

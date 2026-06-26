@@ -62,9 +62,9 @@ async def test_run_audio_only_loads_script_and_calls_voice_agent(tmp_path: Path)
          patch("agents.voice_agent.DATA_DIR", tmp_path), \
          patch("agents.voice_agent._synthesize", new_callable=AsyncMock, return_value=mp3_bytes):
         from agents.orchestrator import run_audio_only
-        result = await run_audio_only(episode_id)
+        result_path, _chars, _provider, _segments = await run_audio_only(episode_id)
 
-    assert result == expected_audio
+    assert result_path == expected_audio
 
 
 @pytest.mark.asyncio
@@ -91,8 +91,8 @@ async def test_run_audio_only_overrides_voice_provider(tmp_path: Path):
 
     captured_provider = []
 
-    async def fake_synthesize(text: str, host: str) -> bytes:
-        captured_provider.append(va.VOICE_PROVIDER)
+    async def fake_synthesize(text: str, host: str, provider: str) -> bytes:
+        captured_provider.append(provider)
         return mp3_bytes
 
     with patch("agents.orchestrator.DATA_DIR", tmp_path), \

@@ -59,7 +59,7 @@ async def test_script_returns_podcast_script(tmp_path: Path):
     with patch("agents.script_agent.anthropic.Anthropic") as MockAnthropic, \
          patch("agents.script_agent.DATA_DIR", tmp_path):
         MockAnthropic.return_value = _make_mock_client(_make_script_json(6))
-        result = await run(
+        result, _usage = await run(
             papers=[_make_paper()],
             bibliography_path=bibliography,
             graph=kg,
@@ -86,7 +86,7 @@ async def test_script_has_both_hosts(tmp_path: Path):
     with patch("agents.script_agent.anthropic.Anthropic") as MockAnthropic, \
          patch("agents.script_agent.DATA_DIR", tmp_path):
         MockAnthropic.return_value = _make_mock_client(_make_script_json(6))
-        result = await run(
+        result, _usage = await run(
             papers=[_make_paper()],
             bibliography_path=bibliography,
             graph=kg,

@@ -1,8 +1,14 @@
 # Environment
 .env
 
-# Audio output (large binary files — don't commit)
+# Generated data output — don't commit
 data/audio/
+data/graphs/
+data/papers/
+data/scripts/
+data/bibliographies/
+data/traces/
+data/reports/
 
 # Python
 __pycache__/

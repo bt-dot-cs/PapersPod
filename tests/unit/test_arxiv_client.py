@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from core.arxiv_client import fetch_papers, _build_search_query
+from core.arxiv_client import fetch_papers, build_search_query as _build_search_query
 from core.models import QueryParameters
 
 
@@ -16,6 +16,7 @@ def _make_arxiv_result(
     published: datetime | None = None,
     journal_ref: str | None = None,
     pdf_url: str = "https://arxiv.org/pdf/2301.12345",
+    doi: str | None = None,
 ) -> MagicMock:
     """Create a mock arxiv.Result object."""
     result = MagicMock()
@@ -26,6 +27,8 @@ def _make_arxiv_result(
     result.published = published or datetime(2023, 6, 15, tzinfo=timezone.utc)
     result.journal_ref = journal_ref
     result.pdf_url = pdf_url
+    result.doi = doi
+    result.links = []
     return result
 
 

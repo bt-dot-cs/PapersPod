@@ -1,9 +1,28 @@
+from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import Enum
 from pathlib import Path
 from typing import Literal, Optional
 
 from pydantic import BaseModel, field_validator
+
+
+@dataclass
+class TokenUsage:
+    """Accumulated Claude API token counts for a pipeline run."""
+    input_tokens: int = field(default=0)
+    output_tokens: int = field(default=0)
+
+    def __add__(self, other: "TokenUsage") -> "TokenUsage":
+        return TokenUsage(
+            input_tokens=self.input_tokens + other.input_tokens,
+            output_tokens=self.output_tokens + other.output_tokens,
+        )
+
+    def __iadd__(self, other: "TokenUsage") -> "TokenUsage":
+        self.input_tokens += other.input_tokens
+        self.output_tokens += other.output_tokens
+        return self
 
 
 class ExpertiseLevel(str, Enum):
@@ -32,7 +51,12 @@ class QueryParameters(BaseModel):
     max_papers: int = 10
     include_preprints: bool = True
     user_profile: Optional[UserProfile] = None
-    source: Literal["auto", "arxiv", "openalex"] = "auto"
+    source: Literal["auto", "arxiv", "openalex", "crossref", "plos", "springer", "ieee", "doaj"] = "auto"
+    crossref_publisher: Optional[str] = None  # Publisher key for --source crossref (e.g. 'sage', 'elsevier')
+    anchor_paper: Optional[str] = None        # arXiv ID, DOI, or title for anchor-paper mode
+    anchor_paper_json: Optional[str] = None   # Path to JSON file with pre-populated Paper fields
+    enrich: bool = False                       # Run S2 enrichment (citation counts/TLDR) after fetch
+    trace_reasoning: bool = False              # Write Claude selection reasoning to fetch trace
 
     @field_validator("publication_date_range")
     @classmethod
@@ -59,7 +83,10 @@ class Paper(BaseModel):
     study_period_start: Optional[date] = None  # Temporal scope of referenced data
     study_period_end: Optional[date] = None
     pdf_url: Optional[str] = None
+    # License
+    license: Optional[str] = None              # Normalized: cc-by, cc0, cc-by-nc, restricted, unknown, etc.
     # Source metadata
+    doi: Optional[str] = None                  # Raw DOI string (e.g. 10.1234/example)
     openalex_id: Optional[str] = None          # OpenAlex work ID (e.g. W2741809807)
     # Semantic Scholar enrichment
     citation_count: Optional[int] = None
@@ -77,6 +104,7 @@ class DialogueTurn(BaseModel):
     host: Literal["A", "B"]
     text: str
     audio_segment_path: Optional[Path] = None  # Set by VoiceAgent
+    paper_refs: list[str] = []                 # arXiv IDs discussed in this turn (set by ScriptAgent)
 
 
 class PodcastScript(BaseModel):

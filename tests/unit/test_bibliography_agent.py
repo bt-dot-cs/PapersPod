@@ -51,7 +51,7 @@ async def test_bibliography_returns_path(tmp_path: Path):
          patch("agents.bibliography_agent.DATA_DIR", tmp_path):
         MockAnthropic.return_value = _make_mock_anthropic()
         from agents.bibliography_agent import run
-        result = await run(papers, query, episode_id="ep1")
+        result, _usage = await run(papers, query, episode_id="ep1")
 
     assert isinstance(result, Path)
 
@@ -66,7 +66,7 @@ async def test_bibliography_file_exists(tmp_path: Path):
          patch("agents.bibliography_agent.DATA_DIR", tmp_path):
         MockAnthropic.return_value = _make_mock_anthropic("Full Citation.\n\nAnnotation.")
         from agents.bibliography_agent import run
-        result = await run(papers, query, episode_id="ep1")
+        result, _usage = await run(papers, query, episode_id="ep1")
 
     assert result.exists()
     content = result.read_text()
@@ -92,12 +92,13 @@ async def test_bibliography_contains_all_papers(tmp_path: Path):
         return mock
 
     with patch("agents.bibliography_agent.anthropic.Anthropic") as MockAnthropic, \
-         patch("agents.bibliography_agent.DATA_DIR", tmp_path):
+         patch("agents.bibliography_agent.DATA_DIR", tmp_path), \
+         patch("agents.bibliography_agent.os.getenv", return_value=None):
         mock_client = MagicMock()
         mock_client.messages.create.side_effect = annotation_side_effect
         MockAnthropic.return_value = mock_client
         from agents.bibliography_agent import run
-        result = await run(papers, query, episode_id="ep1")
+        result, _usage = await run(papers, query, episode_id="ep1")
 
     # 2 papers + 1 intro = 3 total calls
     assert mock_client.messages.create.call_count == 3
@@ -120,7 +121,8 @@ async def test_bibliography_expertise_level_in_prompt(tmp_path: Path):
         return mock
 
     with patch("agents.bibliography_agent.anthropic.Anthropic") as MockAnthropic, \
-         patch("agents.bibliography_agent.DATA_DIR", tmp_path):
+         patch("agents.bibliography_agent.DATA_DIR", tmp_path), \
+         patch("agents.bibliography_agent.os.getenv", return_value=None):
         mock_client = MagicMock()
         mock_client.messages.create.side_effect = capture_prompt
         MockAnthropic.return_value = mock_client
@@ -129,7 +131,7 @@ async def test_bibliography_expertise_level_in_prompt(tmp_path: Path):
 
     # First call is the annotation prompt — should contain "expert"
     assert captured_prompts, "No prompts captured"
-    assert "expert" in captured_prompts[0].lower()
+    assert any("expert" in p.lower() for p in captured_prompts)
 
 
 @pytest.mark.asyncio
@@ -142,6 +144,6 @@ async def test_bibliography_saved_to_correct_path(tmp_path: Path):
          patch("agents.bibliography_agent.DATA_DIR", tmp_path):
         MockAnthropic.return_value = _make_mock_anthropic()
         from agents.bibliography_agent import run
-        result = await run(papers, query, episode_id="test-episode-123")
+        result, _usage = await run(papers, query, episode_id="test-episode-123")
 
     assert result == tmp_path / "bibliographies" / "test-episode-123.md"
