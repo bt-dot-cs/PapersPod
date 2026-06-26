@@ -37,8 +37,25 @@ If no specific data period is mentioned, return {{"start_year": null, "end_year"
 Abstract: {abstract}"""
 
 
+def _build_keyword_terms(keywords: list[str]) -> list[str]:
+    """Convert keyword/keyphrase list to arXiv abs: search terms."""
+    terms = []
+    for kw in keywords:
+        words = kw.strip().split()
+        if not words:
+            continue
+        if len(words) == 1:
+            terms.append(f"abs:{words[0]}")
+        elif len(words) <= 3:
+            terms.append(f'abs:"{kw.strip()}"')
+        else:
+            # 4+ word phrase: decompose into individual abs: terms for API recall
+            terms.extend(f"abs:{w}" for w in words if len(w) > 2)
+    return terms
+
+
 def build_search_query(query: QueryParameters) -> str:
-    """Combine topic, discipline category codes, and date range into an arXiv query string."""
+    """Combine topic, discipline category codes, and keyword abs: terms into an arXiv query string."""
     parts = [query.topic]
     categories = []
     for discipline in query.disciplines:
@@ -48,6 +65,10 @@ def build_search_query(query: QueryParameters) -> str:
     if categories:
         cat_filter = " OR ".join(f"cat:{c}" for c in categories)
         parts.append(f"({cat_filter})")
+    if query.keywords:
+        kw_terms = _build_keyword_terms(query.keywords)
+        if kw_terms:
+            parts.extend(kw_terms)
     return " AND ".join(parts)
 
 
@@ -111,7 +132,7 @@ async def fetch_papers(query: QueryParameters) -> list[Paper]:
     client_arxiv = arxiv.Client()
     search = arxiv.Search(
         query=search_query,
-        max_results=max(query.max_papers * 3, 15),
+        max_results=max(query.max_papers * 4, 20),
         sort_by=arxiv.SortCriterion.Relevance,
     )
 

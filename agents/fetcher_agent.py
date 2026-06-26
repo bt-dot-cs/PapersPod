@@ -199,23 +199,85 @@ async def _generate_selection_reasoning(
 
 
 def _sort_by_expertise(papers: list[Paper], level: ExpertiseLevel) -> list[Paper]:
-    """Sort and filter papers according to expertise level heuristics."""
+    """Citation-based fallback sort when composite scoring is unavailable."""
     if level == ExpertiseLevel.novice:
-        # Surveys first, then by citation count descending
-        return sorted(
-            papers,
-            key=lambda p: (not _is_survey(p), -(p.citation_count or 0)),
-        )
+        return sorted(papers, key=lambda p: (not _is_survey(p), -(p.citation_count or 0)))
     elif level == ExpertiseLevel.intermediate:
-        # Sort by citation velocity descending (active, debated work)
         return sorted(papers, key=lambda p: -(p.citation_velocity or 0))
     else:
-        # expert: most recent first, deprioritize surveys
-        return sorted(
-            papers,
-            key=lambda p: (_is_survey(p), p.published_date),
-            reverse=True,
+        return sorted(papers, key=lambda p: (_is_survey(p), p.published_date), reverse=True)
+
+
+async def _score_papers(
+    papers: list[Paper],
+    query: QueryParameters,
+    level: ExpertiseLevel,
+) -> list[Paper]:
+    """Composite semantic scoring. Falls back to _sort_by_expertise on any error."""
+    import math
+    import os
+    try:
+        from openai import AsyncOpenAI
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY not set — composite scoring unavailable")
+
+        openai_client = AsyncOpenAI(api_key=api_key)
+        EMBEDDING_MODEL = "text-embedding-3-small"
+
+        query_text = (query.context_text or query.topic)[:5_000]
+        candidate_texts = [f"{p.title} {p.abstract}"[:5_000] for p in papers]
+
+        # Single batch call: query + all candidates
+        resp = await openai_client.embeddings.create(
+            model=EMBEDDING_MODEL,
+            input=[query_text] + candidate_texts,
         )
+        query_vec = resp.data[0].embedding
+        cand_vecs = [d.embedding for d in resp.data[1:]]
+
+        # text-embedding-3-small returns unit vectors; dot product == cosine similarity
+        def cosine(a: list[float], b: list[float]) -> float:
+            return sum(x * y for x, y in zip(a, b))
+
+        pub_dates = [p.published_date for p in papers]
+        min_date = min(pub_dates)
+        max_date = max(pub_dates)
+        date_span = max(1, (max_date - min_date).days)
+
+        long_phrases = [kw for kw in query.keywords if len(kw.split()) >= 4]
+
+        def kw_score(paper: Paper) -> float:
+            if not query.keywords:
+                return 0.0
+            haystack = (paper.title + " " + paper.abstract).lower()
+            hits = sum(1 for kw in query.keywords if kw.lower() in haystack)
+            bonus = sum(0.5 for lp in long_phrases if lp.lower() in haystack)
+            return min(1.0, hits / len(query.keywords) + bonus)
+
+        survey_weights = {
+            ExpertiseLevel.novice:        0.15,
+            ExpertiseLevel.intermediate:  0.0,
+            ExpertiseLevel.expert:       -0.10,
+        }
+
+        scores: list[tuple[float, Paper]] = []
+        for i, paper in enumerate(papers):
+            sim      = cosine(query_vec, cand_vecs[i])
+            kw       = kw_score(paper)
+            recency  = (paper.published_date - min_date).days / date_span
+            cite     = math.log1p(paper.citation_count or 0) / 10.0
+            survey   = survey_weights[level] if _is_survey(paper) else 0.0
+            score    = 0.60 * sim + 0.20 * kw + 0.10 * recency + 0.05 * cite + survey
+            scores.append((score, paper))
+
+        scores.sort(key=lambda x: x[0], reverse=True)
+        logger.info("FetcherAgent: composite scoring complete for %d candidates", len(papers))
+        return [p for _, p in scores]
+
+    except Exception as exc:
+        logger.warning("FetcherAgent: composite scoring failed (%s) — falling back to citation sort", exc)
+        return _sort_by_expertise(papers, level)
 
 
 async def run(query: QueryParameters, episode_id: str) -> list[Paper]:
@@ -244,18 +306,26 @@ async def run(query: QueryParameters, episode_id: str) -> list[Paper]:
         source = "semantic_scholar"
         search_query_sent = f"anchor={anchor.arxiv_id}"
         logger.info("FetcherAgent: anchor + %d related papers", len(related))
-    elif query.anchor_paper:
+    elif query.anchor_papers:
         mode = "anchor"
-        logger.info("FetcherAgent: anchor-paper mode — resolving '%s'", query.anchor_paper[:70])
-        anchor, related = await semantic_scholar_client.fetch_anchor_and_recommendations(
-            query.anchor_paper, max_related=query.max_papers - 1
-        )
-        # Anchor is always first; related already have S2 data, skip enrich_papers
-        papers = [anchor] + related
+        logger.info("FetcherAgent: anchor-paper mode — %d anchor(s)", len(query.anchor_papers))
+        seen_ids: set[str] = set()
+        all_papers: list[Paper] = []
+        max_related_per_anchor = max(query.max_papers - 1, 1)
+        for ap in query.anchor_papers:
+            logger.info("FetcherAgent: resolving anchor '%s'", ap[:70])
+            anchor, related = await semantic_scholar_client.fetch_anchor_and_recommendations(
+                ap, max_related=max_related_per_anchor
+            )
+            for p in [anchor] + related:
+                if p.arxiv_id not in seen_ids:
+                    seen_ids.add(p.arxiv_id)
+                    all_papers.append(p)
+        papers = all_papers
         candidates = list(papers)
         source = "semantic_scholar"
-        search_query_sent = f"anchor={query.anchor_paper}"
-        logger.info("FetcherAgent: anchor + %d related papers", len(related))
+        search_query_sent = "anchor=" + ",".join(query.anchor_papers)
+        logger.info("FetcherAgent: %d deduplicated papers across %d anchor(s)", len(papers), len(query.anchor_papers))
     else:
         source = _select_source(query)
         logger.info("FetcherAgent: using source=%s", source)
@@ -320,7 +390,7 @@ async def run(query: QueryParameters, episode_id: str) -> list[Paper]:
             candidates = list(papers)
 
     level = _get_expertise_level(query)
-    papers = _sort_by_expertise(papers, level)
+    papers = await _score_papers(papers, query, level)
     papers = papers[:query.max_papers]
     logger.info("FetcherAgent: selected %d/%d papers for expertise level '%s'", len(papers), len(candidates), level)
 

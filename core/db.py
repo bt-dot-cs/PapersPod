@@ -59,7 +59,7 @@ def insert_cost_event(manifest: dict[str, Any], database_url: str) -> None:
                 "source":                 params.get("source"),
                 "expertise_level":        params.get("expertise_level"),
                 "max_papers":             params.get("max_papers"),
-                "anchor_paper":           params.get("anchor_paper"),
+                "anchor_paper":           ",".join(params.get("anchor_papers") or []) or params.get("anchor_paper"),
                 "tokens_input":           tokens.get("input", 0),
                 "tokens_output":          tokens.get("output", 0),
                 "cost_claude_input":      costs.get("claude_input", 0),
@@ -187,12 +187,12 @@ def log_paper_click(
 
 
 def get_episode_papers(episode_id: str, database_url: str) -> list[dict[str, Any]]:
-    """Return ordered list of papers with authors and annotation for an episode."""
+    """Return ordered list of papers with authors, annotation, and abstract snippet for an episode."""
     with psycopg.connect(database_url) as conn:
         rows = conn.execute(
             """
             SELECT p.arxiv_id, p.doi, p.title, p.authors, p.published_date,
-                   ep.annotation, ep.display_order
+                   ep.annotation, ep.display_order, p.abstract_snippet
               FROM episode_papers ep
               JOIN papers p ON p.arxiv_id = ep.arxiv_id
              WHERE ep.episode_id = %s
@@ -203,12 +203,13 @@ def get_episode_papers(episode_id: str, database_url: str) -> list[dict[str, Any
 
     return [
         {
-            "arxiv_id":     r[0],
-            "doi":          r[1],
-            "title":        r[2],
-            "authors":      r[3],
+            "arxiv_id":       r[0],
+            "doi":            r[1],
+            "title":          r[2],
+            "authors":        r[3],
             "published_date": r[4].isoformat() if r[4] else None,
-            "annotation":   r[5],
+            "annotation":     r[5],
+            "abstract_snippet": r[7],
         }
         for r in rows
     ]
@@ -267,16 +268,40 @@ def update_episode_status(
     error: str | None = None,
     manifest: dict[str, Any] | None = None,
 ) -> None:
-    """Update episode lifecycle status. Stores manifest JSON on completion."""
+    """Update episode lifecycle status. Stores manifest JSON and promotes metadata on completion."""
     import json as _json
+    params = manifest.get("parameters") or {} if manifest else {}
+    expertise_level = params.get("expertise_level") or None
+    disciplines = params.get("disciplines") or None
+
+    # Derive curation_level from manifest parameters
+    curation_level: str | None = None
+    if manifest:
+        anchor_papers = params.get("anchor_papers") or []
+        context_text = params.get("context_text")
+        keywords = params.get("keywords") or []
+        if anchor_papers and context_text:
+            curation_level = "fully_guided"
+        elif anchor_papers:
+            curation_level = "anchor_guided"
+        elif context_text:
+            curation_level = "context_guided"
+        elif keywords:
+            curation_level = "keyword_guided"
+        else:
+            curation_level = "auto"
+
     with psycopg.connect(database_url) as conn:
         conn.execute(
             """
             UPDATE episodes SET
-                status       = %s,
-                completed_at = CASE WHEN %s IN ('done', 'failed') THEN now() ELSE completed_at END,
-                error        = %s,
-                manifest     = %s
+                status          = %s,
+                completed_at    = CASE WHEN %s IN ('done', 'failed') THEN now() ELSE completed_at END,
+                error           = %s,
+                manifest        = %s,
+                expertise_level = COALESCE(%s, expertise_level),
+                disciplines     = COALESCE(%s, disciplines),
+                curation_level  = COALESCE(%s, curation_level)
             WHERE episode_id = %s
             """,
             (
@@ -284,7 +309,80 @@ def update_episode_status(
                 status,
                 error,
                 _json.dumps(manifest) if manifest else None,
+                expertise_level,
+                disciplines,
+                curation_level,
                 episode_id,
             ),
         )
     logger.info("episode %s → %s", episode_id, status)
+
+
+def upsert_episode_embedding(
+    episode_id: str,
+    target: str,
+    embedding: list[float],
+    model: str,
+    database_url: str,
+) -> None:
+    """Upsert an embedding vector into episode_embeddings. target = 'paper_content' | 'episode_content'."""
+    vec_str = "[" + ",".join(str(v) for v in embedding) + "]"
+    with psycopg.connect(database_url) as conn:
+        conn.execute(
+            """
+            INSERT INTO episode_embeddings (episode_id, target, embedding, embedding_model)
+            VALUES (%s, %s, %s::vector, %s)
+            ON CONFLICT (episode_id, target) DO UPDATE SET
+                embedding       = EXCLUDED.embedding,
+                embedding_model = EXCLUDED.embedding_model,
+                embedded_at     = now()
+            """,
+            (episode_id, target, vec_str, model),
+        )
+    logger.info("embedding upserted for episode %s target=%s", episode_id, target)
+
+
+def get_similar_episodes(
+    episode_id: str,
+    target: str,
+    database_url: str,
+    limit: int = 10,
+    expertise_level: str | None = None,
+    curation_level: str | None = None,
+) -> list[dict[str, Any]]:
+    """Return episodes nearest to episode_id by cosine similarity on the given target embedding."""
+    filters = ["e.episode_id != %(episode_id)s", "ee_ref.target = %(target)s", "ee_cand.target = %(target)s"]
+    bind: dict[str, Any] = {"episode_id": episode_id, "target": target, "limit": limit}
+    if expertise_level:
+        filters.append("e.expertise_level = %(expertise_level)s")
+        bind["expertise_level"] = expertise_level
+    if curation_level:
+        filters.append("e.curation_level = %(curation_level)s")
+        bind["curation_level"] = curation_level
+
+    where = " AND ".join(filters)
+    sql = f"""
+        SELECT e.episode_id,
+               e.expertise_level,
+               e.curation_level,
+               e.manifest,
+               1 - (ee_cand.embedding <=> ee_ref.embedding) AS similarity
+          FROM episode_embeddings ee_ref
+          JOIN episode_embeddings ee_cand ON ee_cand.target = ee_ref.target
+          JOIN episodes e ON e.episode_id = ee_cand.episode_id
+         WHERE {where}
+         ORDER BY ee_cand.embedding <=> ee_ref.embedding
+         LIMIT %(limit)s
+    """
+    with psycopg.connect(database_url) as conn:
+        rows = conn.execute(sql, bind).fetchall()
+    return [
+        {
+            "episode_id":     r[0],
+            "expertise_level": r[1],
+            "curation_level": r[2],
+            "manifest":       r[3],
+            "similarity":     float(r[4]),
+        }
+        for r in rows
+    ]

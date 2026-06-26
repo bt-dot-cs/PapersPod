@@ -4,7 +4,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Literal, Optional
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, model_validator
 
 
 @dataclass
@@ -53,10 +53,33 @@ class QueryParameters(BaseModel):
     user_profile: Optional[UserProfile] = None
     source: Literal["auto", "arxiv", "openalex", "crossref", "plos", "springer", "ieee", "doaj"] = "auto"
     crossref_publisher: Optional[str] = None  # Publisher key for --source crossref (e.g. 'sage', 'elsevier')
-    anchor_paper: Optional[str] = None        # arXiv ID, DOI, or title for anchor-paper mode
+    # Curation inputs (all optional; determine curation_level)
+    anchor_papers: list[str] = []             # arXiv IDs, DOIs, or titles (up to 5); routes to S2 SPECTER2 recommendations
     anchor_paper_json: Optional[str] = None   # Path to JSON file with pre-populated Paper fields
+    keywords: list[str] = []                  # Comma-separated terms; 1-word → abs:word, 2-3 words → abs:"phrase"
+    context_text: Optional[str] = None        # Free-text topic context; Haiku extracts structured terms
     enrich: bool = False                       # Run S2 enrichment (citation counts/TLDR) after fetch
     trace_reasoning: bool = False              # Write Claude selection reasoning to fetch trace
+
+    @property
+    def curation_level(self) -> str:
+        """Derived from which optional curation inputs are populated."""
+        if self.anchor_papers and self.context_text:
+            return "fully_guided"
+        if self.anchor_papers:
+            return "anchor_guided"
+        if self.context_text:
+            return "context_guided"
+        if self.keywords:
+            return "keyword_guided"
+        return "auto"
+
+    @field_validator("anchor_papers")
+    @classmethod
+    def validate_anchor_papers(cls, v: list[str]) -> list[str]:
+        if len(v) > 5:
+            raise ValueError("anchor_papers accepts at most 5 entries")
+        return v
 
     @field_validator("publication_date_range")
     @classmethod

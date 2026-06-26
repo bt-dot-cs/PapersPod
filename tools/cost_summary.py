@@ -64,7 +64,7 @@ def _manifest_to_event(m: dict) -> dict:
         "source":                  params.get("source"),
         "expertise_level":         params.get("expertise_level"),
         "max_papers":              params.get("max_papers"),
-        "anchor_paper":            params.get("anchor_paper"),
+        "anchor_paper":            ",".join(params.get("anchor_papers") or []) or params.get("anchor_paper"),
         "tokens_input":            tokens.get("input", 0),
         "tokens_output":           tokens.get("output", 0),
         "cost_claude_input":       costs.get("claude_input", 0.0),

@@ -91,7 +91,7 @@ def _save_partial_manifest(
             "max_papers": query.max_papers,
             "expertise_level": query.user_profile.default_level.value,
             "voice_provider_requested": tts_provider_requested,
-            "anchor_paper": query.anchor_paper,
+            "anchor_papers": query.anchor_papers,
             "publication_start": query.publication_date_range[0].isoformat() if query.publication_date_range else None,
             "publication_end": query.publication_date_range[1].isoformat() if query.publication_date_range else None,
         },
@@ -175,11 +175,12 @@ def _parse_args() -> argparse.Namespace:
         help="TTS provider override (default: use VOICE_PROVIDER from .env). elevenlabs=premium library voices, elevenlabs_free=premade voices (free-tier accessible)"
     )
     parser.add_argument(
-        "--anchor-paper", metavar="ID_OR_TITLE",
+        "--anchor-paper", metavar="ID_OR_TITLE", action="append", dest="anchor_papers",
         help=(
             "Anchor the episode around a specific paper. "
             "Accepts arXiv ID (e.g. 2301.07041), DOI (e.g. 10.1145/...), or a title string. "
             "Related papers are fetched via Semantic Scholar recommendations. "
+            "Repeat to provide up to 5 anchor papers: --anchor-paper id1 --anchor-paper id2. "
             "When used, --publication-start and --publication-end are optional (default: last 5 years)."
         )
     )
@@ -351,7 +352,7 @@ def _build_manifest(
             "max_papers":              query.max_papers,
             "expertise_level":         query.user_profile.default_level.value,
             "voice_provider_requested": tts_provider_requested,
-            "anchor_paper":            query.anchor_paper,
+            "anchor_papers":           query.anchor_papers,
             "publication_start":       query.publication_date_range[0].isoformat() if query.publication_date_range else None,
             "publication_end":         query.publication_date_range[1].isoformat() if query.publication_date_range else None,
         },
@@ -477,7 +478,7 @@ def main() -> None:
 
     if not args.topic or not args.disciplines:
         raise SystemExit("--topic and --disciplines are required unless --skip-to-audio is used")
-    _anchor_mode = bool(args.anchor_paper or args.anchor_paper_json)
+    _anchor_mode = bool(args.anchor_papers or args.anchor_paper_json)
     if not _anchor_mode and (not args.publication_start or not args.publication_end):
         raise SystemExit(
             "--publication-start and --publication-end are required unless "
@@ -524,7 +525,7 @@ def main() -> None:
         user_profile=user_profile,
         source=args.source,
         crossref_publisher=args.crossref_publisher,
-        anchor_paper=args.anchor_paper,
+        anchor_papers=args.anchor_papers or [],
         anchor_paper_json=args.anchor_paper_json,
         enrich=args.enrich,
         trace_reasoning=args.trace_reasoning,
