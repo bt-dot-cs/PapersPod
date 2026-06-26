@@ -1,0 +1,46 @@
+app = "paperspod"
+primary_region = "iad"
+
+[build]
+
+[env]
+  PYTHONPATH    = "/app"
+  PRODUCT_MODE  = "commercial"
+  VOICE_PROVIDER = "openai"
+
+# Secrets (set with fly secrets set KEY=value — never commit values):
+#   ANTHROPIC_API_KEY, OPENAI_API_KEY
+#   DATABASE_URL, DATABASE_URL_DIRECT
+#   R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME
+#   CLERK_JWKS_URL
+#   ADMIN_USER_IDS=user_abc123,user_def456
+#   CORS_ORIGINS=https://your-vercel-app.vercel.app
+
+[processes]
+  web    = "python -m uvicorn web.app:app --host 0.0.0.0 --port 8000 --log-level info"
+  worker = "python worker.py"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["web"]
+
+  [[http_service.checks]]
+    grace_period = "5s"
+    interval = "15s"
+    method = "GET"
+    path = "/health"
+    timeout = "2s"
+
+[[services]]
+  processes = ["worker"]
+  auto_stop_machines = false
+  min_machines_running = 1
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
