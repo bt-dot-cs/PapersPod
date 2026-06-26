@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from core.db import get_cost_events
-from web.auth import require_auth
+from web.auth import require_admin
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -44,7 +44,7 @@ def _db_url() -> str:
 @router.get("/cost-events", response_model=list[CostEventResponse])
 def list_cost_events(
     limit: int = 50,
-    _claims: dict = Depends(require_auth),
+    _claims: dict = Depends(require_admin),
 ) -> list[CostEventResponse]:
     rows = get_cost_events(_db_url(), limit=limit)
     return [CostEventResponse(**row) for row in rows]

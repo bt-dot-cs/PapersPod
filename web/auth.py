@@ -68,6 +68,28 @@ async def require_auth(
     return payload
 
 
+def _admin_ids() -> set[str]:
+    raw = os.getenv("ADMIN_USER_IDS", "")
+    return {s.strip() for s in raw.split(",") if s.strip()}
+
+
+async def require_admin(
+    claims: dict[str, Any] = Depends(require_auth),
+) -> dict[str, Any]:
+    """Like require_auth but also checks the caller is in ADMIN_USER_IDS.
+
+    When CLERK_JWKS_URL is unset (local dev without auth), the gate is skipped
+    so the admin panel still works locally.
+    """
+    if not os.getenv("CLERK_JWKS_URL"):
+        return claims
+    admin_ids = _admin_ids()
+    sub = claims.get("sub") or ""
+    if admin_ids and sub not in admin_ids:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return claims
+
+
 async def optional_auth(
     credentials: HTTPAuthorizationCredentials | None = Depends(_bearer),
 ) -> dict[str, Any] | None:
