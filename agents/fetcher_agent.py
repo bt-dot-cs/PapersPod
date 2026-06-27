@@ -3,10 +3,9 @@ import logging
 from datetime import datetime, timezone
 from pathlib import Path
 
-import anthropic
-
 from core import arxiv_client, crossref_client, doaj_client, ieee_client, openalex_client, plos_client, springer_client, semantic_scholar_client, unpaywall_client
-from core.config import ANTHROPIC_API_KEY, CLAUDE_HAIKU_MODEL, CLAUDE_MODEL, COMMERCIAL_MODE, DATA_DIR
+from core.config import COMMERCIAL_MODE, DATA_DIR
+from core.llm import chat as llm_chat
 from core.license_utils import is_commercial_safe
 from core.models import ExpertiseLevel, Paper, QueryParameters
 
@@ -160,21 +159,21 @@ async def _generate_selection_reasoning(
         selected_block=selected_block,
     )
 
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
     try:
-        response = client.messages.create(
-            model=CLAUDE_HAIKU_MODEL,
-            max_tokens=512,
+        result = llm_chat(
             messages=[{"role": "user", "content": prompt}],
+            max_tokens=512,
+            stage="reasoning",
+            curation_level=query.curation_level,
         )
-        raw = response.content[0].text.strip()
+        raw = result.text.strip()
         if raw.startswith("```"):
             raw = raw.split("```")[1]
             if raw.startswith("json"):
                 raw = raw[4:]
         reasoning = json.loads(raw.strip())
-        input_tokens = response.usage.input_tokens
-        output_tokens = response.usage.output_tokens
+        input_tokens = result.input_tokens
+        output_tokens = result.output_tokens
     except Exception as exc:
         logger.error("FetcherAgent: selection reasoning failed: %s", exc)
         return

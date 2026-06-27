@@ -2,10 +2,10 @@ import logging
 import os
 from pathlib import Path
 
-import anthropic
 import psycopg
 
-from core.config import ANTHROPIC_API_KEY, CLAUDE_HAIKU_MODEL, CLAUDE_MODEL, DATA_DIR
+from core.config import DATA_DIR
+from core.llm import chat as llm_chat
 from core.models import ExpertiseLevel, Paper, QueryParameters, TokenUsage
 
 logger = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ def _get_cached_annotation(paper_id: str, expertise_level: str, db_url: str) -> 
 
 
 def _write_cached_annotation(
-    paper_id: str, expertise_level: str, annotation: str, paper: Paper, db_url: str
+    paper_id: str, expertise_level: str, annotation: str, paper: Paper, db_url: str, model_used: str = ""
 ) -> None:
     """Write annotation to paper_cache. Non-fatal."""
     try:
@@ -72,7 +72,7 @@ def _write_cached_annotation(
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
                 ON CONFLICT (paper_id, expertise_level) DO NOTHING
                 """,
-                (paper_id, expertise_level, annotation, paper.s2_tldr, paper.abstract, paper.title, CLAUDE_HAIKU_MODEL),
+                (paper_id, expertise_level, annotation, paper.s2_tldr, paper.abstract, paper.title, model_used),
             )
     except Exception as exc:
         logger.warning("paper_cache write failed: %s", exc)
@@ -89,7 +89,6 @@ def _get_expertise_level(query: QueryParameters) -> ExpertiseLevel:
 
 async def run(papers: list[Paper], query: QueryParameters, episode_id: str) -> tuple[Path, TokenUsage]:
     """Generate an annotated bibliography for the episode and save to disk."""
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
     level = _get_expertise_level(query)
     discipline = query.disciplines[0] if query.disciplines else "general"
     usage = TokenUsage()
@@ -118,23 +117,22 @@ async def run(papers: list[Paper], query: QueryParameters, episode_id: str) -> t
             discipline=discipline,
             expertise_level=level.value,
         )
-        annotation_model = CLAUDE_HAIKU_MODEL if db_url else CLAUDE_MODEL
-        response = client.messages.create(
-            model=annotation_model,
-            max_tokens=512,
+        result = llm_chat(
             messages=[{"role": "user", "content": prompt}],
+            max_tokens=512,
+            stage="annotation",
+            curation_level=query.curation_level,
+            tier_override="cheap" if db_url else None,
         )
-        usage += TokenUsage(response.usage.input_tokens, response.usage.output_tokens)
-        annotation = response.content[0].text.strip()
+        usage += TokenUsage(result.input_tokens, result.output_tokens)
+        annotation = result.text.strip()
         if db_url:
-            _write_cached_annotation(paper.arxiv_id, level.value, annotation, paper, db_url)
+            _write_cached_annotation(paper.arxiv_id, level.value, annotation, paper, db_url, model_used=result.model)
         annotations.append(annotation)
         logger.info("BibliographyAgent: annotated '%s'", paper.title[:60])
 
     # Generate intro paragraph
-    intro_response = client.messages.create(
-        model=CLAUDE_MODEL,
-        max_tokens=256,
+    intro_result = llm_chat(
         messages=[{
             "role": "user",
             "content": _INTRO_PROMPT.format(
@@ -144,9 +142,12 @@ async def run(papers: list[Paper], query: QueryParameters, episode_id: str) -> t
                 paper_titles="; ".join(p.title for p in papers),
             ),
         }],
+        max_tokens=256,
+        stage="bibliography",
+        curation_level=query.curation_level,
     )
-    usage += TokenUsage(intro_response.usage.input_tokens, intro_response.usage.output_tokens)
-    intro = intro_response.content[0].text.strip()
+    usage += TokenUsage(intro_result.input_tokens, intro_result.output_tokens)
+    intro = intro_result.text.strip()
 
     # Assemble Markdown
     lines = [

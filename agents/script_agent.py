@@ -2,9 +2,8 @@ import json
 import logging
 from pathlib import Path
 
-import anthropic
-
-from core.config import ANTHROPIC_API_KEY, CLAUDE_MODEL, COMMERCIAL_MODE, DATA_DIR
+from core.config import COMMERCIAL_MODE, DATA_DIR
+from core.llm import chat as llm_chat
 from core.knowledge_graph import KnowledgeGraph
 from core.models import DialogueTurn, ExpertiseLevel, Paper, PodcastScript, QueryParameters, TokenUsage
 
@@ -162,7 +161,6 @@ async def run(
     episode_id: str,
 ) -> tuple[PodcastScript, TokenUsage]:
     """Generate a two-host podcast script and save to disk."""
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
     level = _get_expertise_level(query)
 
     bibliography_content = (
@@ -187,14 +185,15 @@ async def run(
     )
 
     logger.info("ScriptAgent: generating script for %d papers", len(papers))
-    response = client.messages.create(
-        model=CLAUDE_MODEL,
-        max_tokens=4096,
+    result = llm_chat(
         messages=[{"role": "user", "content": prompt}],
+        max_tokens=4096,
+        stage="script",
+        curation_level=query.curation_level,
     )
-    usage = TokenUsage(response.usage.input_tokens, response.usage.output_tokens)
+    usage = TokenUsage(result.input_tokens, result.output_tokens)
 
-    turns = _parse_turns(response.content[0].text)
+    turns = _parse_turns(result.text)
     if not turns:
         raise RuntimeError("ScriptAgent: received empty or unparseable script from Claude")
 

@@ -7,6 +7,10 @@ primary_region = "iad"
   PYTHONPATH    = "/app"
   PRODUCT_MODE  = "commercial"
   VOICE_PROVIDER = "openai"
+  # LLM provider per stage: anthropic | openai | gemini (default: anthropic)
+  LLM_PROVIDER_SCRIPT       = "anthropic"
+  LLM_PROVIDER_BIBLIOGRAPHY = "anthropic"
+  LLM_PROVIDER_REASONING    = "anthropic"
 
 # Secrets (set with fly secrets set KEY=value — never commit values):
 #   ANTHROPIC_API_KEY, OPENAI_API_KEY
