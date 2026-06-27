@@ -1,6 +1,7 @@
 'use client'
-import { Show, SignInButton, UserButton } from '@clerk/nextjs'
+import { Show, SignInButton, UserButton, useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
 const NAV = [
@@ -11,6 +12,44 @@ const NAV = [
 const ADMIN_NAV = [
   { href: '/admin', label: 'Admin' },
 ]
+
+function CreditBadge() {
+  const { getToken, isSignedIn } = useAuth()
+  const [balance, setBalance] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (!isSignedIn) return
+    let cancelled = false
+    getToken().then(token => {
+      if (!token || cancelled) return
+      const base = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8000'
+      fetch(`${base}/credits`, { headers: { Authorization: `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => { if (data && !cancelled) setBalance(data.balance) })
+        .catch(() => {})
+    })
+    return () => { cancelled = true }
+  }, [isSignedIn, getToken])
+
+  if (!isSignedIn || balance === null) return null
+
+  return (
+    <div
+      className="mx-2 px-3 py-2 rounded-md flex items-center justify-between mb-2"
+      style={{ background: 'var(--bg-elevated)' }}
+    >
+      <span
+        className="label-caps"
+        style={{ color: 'var(--text-muted)' }}
+      >
+        Credits
+      </span>
+      <span className="text-sm font-semibold" style={{ color: 'var(--accent)' }}>
+        {balance}
+      </span>
+    </div>
+  )
+}
 
 export default function Sidebar() {
   const pathname = usePathname()
@@ -60,6 +99,8 @@ export default function Sidebar() {
           )
         })}
       </div>
+
+      <CreditBadge />
 
       <div
         className="pt-4 px-2 flex items-center gap-3 mt-4 border-t"

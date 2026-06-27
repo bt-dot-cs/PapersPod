@@ -1,7 +1,7 @@
 const LEVELS: Record<string, { label: string; color: string; bg: string }> = {
-  curious:  { label: 'Curious',  color: '#a8d8a8', bg: 'rgba(168,216,168,0.12)' },
-  informed: { label: 'Informed', color: '#d4b067', bg: 'rgba(212,176,103,0.12)' },
-  expert:   { label: 'Expert',   color: '#d4a080', bg: 'rgba(212,160,128,0.12)' },
+  curious:  { label: 'Curious',  color: 'var(--level-curious)',  bg: 'var(--level-curious-bg)' },
+  informed: { label: 'Informed', color: 'var(--level-informed)', bg: 'var(--level-informed-bg)' },
+  expert:   { label: 'Expert',   color: 'var(--level-expert)',   bg: 'var(--level-expert-bg)' },
 }
 
 interface Props {
@@ -19,7 +19,7 @@ export default function LevelTag({ level }: Props) {
 
   return (
     <span
-      className="text-xs font-medium px-2 py-0.5 rounded-full"
+      className="label-caps px-2 py-0.5 rounded-full"
       style={{ color: style.color, backgroundColor: style.bg }}
     >
       {style.label}

@@ -23,13 +23,13 @@ function MyEpisodeCard({ ep }: { ep: Episode }) {
       href={`/episodes/${ep.episode_id}`}
       className="flex-shrink-0 w-40 group"
     >
-      <EpisodeCover episodeId={ep.episode_id} topic={topic} size="md" className="mb-3 group-hover:opacity-90 transition-opacity" />
-      <p className="text-sm font-medium leading-snug truncate" style={{ color: 'var(--text-primary)' }}>
+      <EpisodeCover episodeId={ep.episode_id} topic={topic} level={level} size="md" className="mb-3 group-hover:opacity-90 transition-opacity" />
+      <p className="text-sm font-medium leading-snug truncate" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-spectral), Georgia, serif' }}>
         {topic ?? ep.episode_id}
       </p>
       <div className="flex items-center gap-1.5 mt-1 flex-wrap">
         {level && <LevelTag level={level} />}
-        {field && <span className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{field}</span>}
+        {field && <span className="label-caps truncate" style={{ color: 'var(--text-muted)' }}>{field}</span>}
       </div>
     </Link>
   )
@@ -55,7 +55,12 @@ function CommunityCard({ ep }: { ep: LibraryEpisode }) {
 function Shelf({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="text-base font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>{title}</h2>
+      <h2
+        className="text-lg font-semibold mb-4"
+        style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-spectral), Georgia, serif' }}
+      >
+        {title}
+      </h2>
       <div className="flex gap-5 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
         {children}
       </div>

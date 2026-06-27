@@ -77,7 +77,12 @@ export default function LibraryPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold mb-5" style={{ color: 'var(--text-primary)' }}>Library</h1>
+      <h1
+        className="text-xl font-semibold mb-5"
+        style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-spectral), Georgia, serif' }}
+      >
+        Library
+      </h1>
 
       {/* Tabs */}
       <div className="flex gap-1 mb-6 border-b" style={{ borderColor: 'var(--border)' }}>
@@ -144,7 +149,7 @@ export default function LibraryPage() {
                 <TableRow
                   key={ep.episode_id}
                   href={`/episodes/${ep.episode_id}`}
-                  cover={<EpisodeCover episodeId={ep.episode_id} topic={topic} size="xs" />}
+                  cover={<EpisodeCover episodeId={ep.episode_id} topic={topic} level={level} size="xs" />}
                   topic={topic}
                   meta={level ? <LevelTag level={level} /> : undefined}
                   right={

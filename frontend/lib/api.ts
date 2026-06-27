@@ -77,7 +77,12 @@ export interface CostEvent {
   warnings?: unknown
 }
 
+export interface CreditsBalance {
+  balance: number
+}
+
 export const api = {
+  getCredits:    (token: string) => req<CreditsBalance>('/credits', token),
   listEpisodes:  (token?: string | null) => req<Episode[]>('/episodes', token),
   getEpisode:    (id: string, token?: string | null) => req<Episode>(`/episodes/${id}`, token),
   getAudioUrl:   (id: string) => req<{ url: string }>(`/episodes/${id}/audio-url`),

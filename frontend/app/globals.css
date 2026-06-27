@@ -14,6 +14,14 @@
   --accent-hover:   #e8b86a;
   --border:         #2a241d;
   --border-subtle:  #201b15;
+
+  /* Expertise level colors */
+  --level-curious:      #4db8b0;
+  --level-curious-bg:   rgba(77, 184, 176, 0.14);
+  --level-informed:     #c4875a;
+  --level-informed-bg:  rgba(196, 135, 90, 0.14);
+  --level-expert:       #9b7fd4;
+  --level-expert-bg:    rgba(155, 127, 212, 0.14);
 }
 
 html,
@@ -56,4 +64,13 @@ body {
   flex-shrink: 0;
   background-color: var(--bg-sidebar);
   border-top: 1px solid var(--border);
+}
+
+/* Spaced-caps label — IBM Plex Mono, tracked */
+.label-caps {
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
 }
