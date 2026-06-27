@@ -1,10 +1,8 @@
 import json
 import logging
 
-import anthropic
-
-from core.config import ANTHROPIC_API_KEY, CLAUDE_MODEL
 from core.knowledge_graph import KnowledgeGraph
+from core.llm import chat as llm_chat
 from core.models import Paper, TokenUsage
 
 logger = logging.getLogger(__name__)
@@ -43,7 +41,6 @@ def _safe_parse_json(text: str) -> dict:
 
 async def run(papers: list[Paper], episode_id: str, graph: KnowledgeGraph) -> tuple[KnowledgeGraph, TokenUsage]:
     """Extract entities/relationships from papers and update the knowledge graph."""
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
     usage = TokenUsage()
 
     for paper in papers:
@@ -57,17 +54,17 @@ async def run(papers: list[Paper], episode_id: str, graph: KnowledgeGraph) -> tu
             author_id = graph.add_author(author_name)
             graph.add_edge(paper_node_id, author_id, edge_type="CO_AUTHORED_BY")
 
-        # Extract entities via Claude
-        response = client.messages.create(
-            model=CLAUDE_MODEL,
-            max_tokens=1024,
+        # Extract entities via LLM
+        result = llm_chat(
             messages=[{
                 "role": "user",
                 "content": _EXTRACT_PROMPT.format(abstract=paper.abstract),
             }],
+            max_tokens=1024,
+            stage="graph",
         )
-        usage += TokenUsage(response.usage.input_tokens, response.usage.output_tokens)
-        data = _safe_parse_json(response.content[0].text)
+        usage += TokenUsage(result.input_tokens, result.output_tokens)
+        data = _safe_parse_json(result.text)
 
         # Add concepts
         for concept in data.get("concepts", []):

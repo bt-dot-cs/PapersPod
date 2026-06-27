@@ -4,6 +4,7 @@ Route each pipeline stage to Anthropic / OpenAI / Gemini independently via env v
     LLM_PROVIDER_SCRIPT=anthropic        (default)
     LLM_PROVIDER_BIBLIOGRAPHY=anthropic  (default)
     LLM_PROVIDER_REASONING=anthropic     (default)
+    LLM_PROVIDER_GRAPH=anthropic         (default)
 
 Model tier is derived from curation_level so higher-effort episodes get better models:
     auto / keyword_guided  → cheap   (Haiku / gpt-4o-mini / gemini-flash)
@@ -19,7 +20,7 @@ from typing import Literal
 
 logger = logging.getLogger(__name__)
 
-Stage = Literal["script", "bibliography", "annotation", "reasoning"]
+Stage = Literal["script", "bibliography", "annotation", "reasoning", "graph"]
 
 _PROVIDER_MODELS: dict[str, dict[str, str]] = {
     "anthropic": {
@@ -52,6 +53,7 @@ _STAGE_ENV: dict[str, str] = {
     "bibliography": "LLM_PROVIDER_BIBLIOGRAPHY",
     "annotation":   "LLM_PROVIDER_BIBLIOGRAPHY",
     "reasoning":    "LLM_PROVIDER_REASONING",
+    "graph":        "LLM_PROVIDER_GRAPH",
 }
 
 
