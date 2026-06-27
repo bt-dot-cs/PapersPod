@@ -7,10 +7,26 @@ import psycopg
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from core.db import create_episode, get_episode_papers, set_episode_shared
+from core.db import (
+    InsufficientCreditsError,
+    create_episode,
+    debit_credits,
+    get_episode_papers,
+    grant_credits,
+    set_episode_shared,
+)
 from core.models import QueryParameters
 from core.queue import generate_episode
 from web.auth import optional_auth, require_auth
+
+# Credit cost by curation level (matches the spec)
+_CURATION_COST: dict[str, int] = {
+    "auto":            1,
+    "keyword_guided":  1,
+    "context_guided":  2,
+    "anchor_guided":   2,
+    "fully_guided":    3,
+}
 
 router = APIRouter(prefix="/episodes", tags=["episodes"])
 
@@ -89,12 +105,35 @@ async def create_episode_endpoint(
     claims: dict = Depends(require_auth),
 ) -> EpisodeCreateResponse:
     db_url = _db_url()
+    user_id = claims.get("sub")
     episode_id = str(uuid.uuid4())
-    create_episode(episode_id, db_url, user_id=claims.get("sub"))
-    await generate_episode.defer_async(
-        query_dict=query.model_dump(mode="json"),
-        episode_id=episode_id,
-    )
+    cost = _CURATION_COST.get(query.curation_level, 1)
+
+    # Credit gate — skipped in local dev where user_id is None
+    if user_id:
+        try:
+            debit_credits(user_id, cost, episode_id, "episode_generated", db_url)
+        except InsufficientCreditsError as exc:
+            raise HTTPException(
+                status_code=402,
+                detail={
+                    "error": "insufficient_credits",
+                    "balance": exc.balance,
+                    "required": exc.required,
+                },
+            )
+
+    try:
+        create_episode(episode_id, db_url, user_id=user_id)
+        await generate_episode.defer_async(
+            query_dict=query.model_dump(mode="json"),
+            episode_id=episode_id,
+        )
+    except Exception:
+        if user_id:
+            grant_credits(user_id, cost, "refund", db_url, episode_id=episode_id)
+        raise
+
     return EpisodeCreateResponse(episode_id=episode_id)
 
 

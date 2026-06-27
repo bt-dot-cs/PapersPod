@@ -6,6 +6,151 @@ import psycopg
 
 logger = logging.getLogger(__name__)
 
+# ---------------------------------------------------------------------------
+# Credits
+# ---------------------------------------------------------------------------
+
+SIGNUP_BONUS = 5
+
+
+class InsufficientCreditsError(Exception):
+    def __init__(self, balance: int, required: int) -> None:
+        self.balance = balance
+        self.required = required
+        super().__init__(f"Insufficient credits: have {balance}, need {required}")
+
+
+def _ensure_credits_row(user_id: str, conn: psycopg.Connection) -> None:
+    """Insert user_credits row (balance=SIGNUP_BONUS) if absent. Records signup_bonus event."""
+    cur = conn.execute(
+        "INSERT INTO user_credits (user_id, balance) VALUES (%s, %s) ON CONFLICT DO NOTHING",
+        (user_id, SIGNUP_BONUS),
+    )
+    if cur.rowcount > 0:
+        conn.execute(
+            "INSERT INTO credit_events (user_id, delta, event_type) VALUES (%s, %s, 'signup_bonus')",
+            (user_id, SIGNUP_BONUS),
+        )
+
+
+def get_credit_balance(user_id: str, database_url: str) -> int:
+    """Return current balance, initialising the account with a signup bonus on first call."""
+    with psycopg.connect(database_url) as conn:
+        _ensure_credits_row(user_id, conn)
+        row = conn.execute(
+            "SELECT balance FROM user_credits WHERE user_id = %s", (user_id,)
+        ).fetchone()
+        return row[0]
+
+
+def debit_credits(
+    user_id: str,
+    cost: int,
+    episode_id: str,
+    event_type: str,
+    database_url: str,
+) -> int:
+    """Atomically debit credits. Returns new balance. Raises InsufficientCreditsError if short."""
+    with psycopg.connect(database_url) as conn:
+        _ensure_credits_row(user_id, conn)
+        cur = conn.execute(
+            """
+            UPDATE user_credits
+               SET balance = balance - %s, updated_at = now()
+             WHERE user_id = %s AND balance >= %s
+            """,
+            (cost, user_id, cost),
+        )
+        if cur.rowcount == 0:
+            row = conn.execute(
+                "SELECT balance FROM user_credits WHERE user_id = %s", (user_id,)
+            ).fetchone()
+            raise InsufficientCreditsError(row[0] if row else 0, cost)
+        conn.execute(
+            "INSERT INTO credit_events (user_id, delta, event_type, episode_id) VALUES (%s, %s, %s, %s)",
+            (user_id, -cost, event_type, episode_id),
+        )
+        row = conn.execute(
+            "SELECT balance FROM user_credits WHERE user_id = %s", (user_id,)
+        ).fetchone()
+        return row[0]
+
+
+def grant_credits(
+    user_id: str,
+    delta: int,
+    event_type: str,
+    database_url: str,
+    episode_id: str | None = None,
+    metadata: dict | None = None,
+) -> int:
+    """Grant credits (or record 0-delta when throttled). Returns new balance."""
+    with psycopg.connect(database_url) as conn:
+        _ensure_credits_row(user_id, conn)
+        if delta > 0:
+            conn.execute(
+                "UPDATE user_credits SET balance = balance + %s, updated_at = now() WHERE user_id = %s",
+                (delta, user_id),
+            )
+        conn.execute(
+            """
+            INSERT INTO credit_events (user_id, delta, event_type, episode_id, metadata)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            (user_id, delta, event_type, episode_id, json.dumps(metadata) if metadata else None),
+        )
+        row = conn.execute(
+            "SELECT balance FROM user_credits WHERE user_id = %s", (user_id,)
+        ).fetchone()
+        return row[0]
+
+
+def get_weekly_feedback_credit_count(user_id: str, database_url: str) -> int:
+    """Sum of feedback credit grants (delta > 0) in the last 7 days for throttle check."""
+    with psycopg.connect(database_url) as conn:
+        row = conn.execute(
+            """
+            SELECT COALESCE(SUM(delta), 0)
+              FROM credit_events
+             WHERE user_id = %s
+               AND event_type LIKE 'feedback_%%'
+               AND delta > 0
+               AND created_at >= now() - INTERVAL '7 days'
+            """,
+            (user_id,),
+        ).fetchone()
+        return int(row[0]) if row else 0
+
+
+def get_credit_history(
+    user_id: str,
+    database_url: str,
+    limit: int = 20,
+) -> list[dict[str, Any]]:
+    """Return recent credit ledger entries for a user, newest first."""
+    with psycopg.connect(database_url) as conn:
+        rows = conn.execute(
+            """
+            SELECT id, delta, event_type, episode_id, metadata, created_at
+              FROM credit_events
+             WHERE user_id = %s
+             ORDER BY created_at DESC
+             LIMIT %s
+            """,
+            (user_id, limit),
+        ).fetchall()
+    return [
+        {
+            "id":         r[0],
+            "delta":      r[1],
+            "event_type": r[2],
+            "episode_id": r[3],
+            "metadata":   r[4],
+            "created_at": r[5].isoformat() if r[5] else None,
+        }
+        for r in rows
+    ]
+
 
 def insert_cost_event(manifest: dict[str, Any], database_url: str) -> None:
     """Upsert one row into cost_events from a completed episode manifest."""

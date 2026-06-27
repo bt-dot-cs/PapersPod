@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from web.routers import admin, episodes, events, ref
+from web.routers import admin, credits, episodes, events, ref
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +38,7 @@ app.include_router(episodes.router)
 app.include_router(events.router)
 app.include_router(ref.router)
 app.include_router(admin.router)
+app.include_router(credits.router)
 
 
 @app.get("/health", include_in_schema=False)
