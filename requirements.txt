@@ -26,6 +26,7 @@ PyJWT[crypto]            # Clerk JWT verification
 
 # Database (Neon Postgres)
 psycopg[binary]
+cryptography          # Fernet AES encryption for BYOK user API keys
 
 # Job queue (Postgres-backed, no Redis required)
 procrastinate[psycopg]

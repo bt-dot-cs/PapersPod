@@ -110,18 +110,25 @@ async def create_episode_endpoint(
     cost = _CURATION_COST.get(query.curation_level, 1)
 
     # Credit gate — skipped in local dev where user_id is None
+    # BYOK users skip credit debit: their own API key is their payment
+    byok_active = False
     if user_id:
-        try:
-            debit_credits(user_id, cost, episode_id, "episode_generated", db_url)
-        except InsufficientCreditsError as exc:
-            raise HTTPException(
-                status_code=402,
-                detail={
-                    "error": "insufficient_credits",
-                    "balance": exc.balance,
-                    "required": exc.required,
-                },
-            )
+        from core.byok import get_user_key
+        from core.llm import route as llm_route
+        script_provider, _ = llm_route("script", query.curation_level)
+        byok_active = bool(get_user_key(user_id, script_provider, db_url))
+        if not byok_active:
+            try:
+                debit_credits(user_id, cost, episode_id, "episode_generated", db_url)
+            except InsufficientCreditsError as exc:
+                raise HTTPException(
+                    status_code=402,
+                    detail={
+                        "error": "insufficient_credits",
+                        "balance": exc.balance,
+                        "required": exc.required,
+                    },
+                )
 
     try:
         create_episode(episode_id, db_url, user_id=user_id)
@@ -130,7 +137,7 @@ async def create_episode_endpoint(
             episode_id=episode_id,
         )
     except Exception:
-        if user_id:
+        if user_id and not byok_active:
             grant_credits(user_id, cost, "refund", db_url, episode_id=episode_id)
         raise
 
