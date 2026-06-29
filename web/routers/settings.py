@@ -24,24 +24,30 @@ class UpsertKeyRequest(BaseModel):
 
 
 @router.put("/api-keys/{provider}")
-def upsert_api_key(
+async def upsert_api_key(
     provider: Provider,
     body: UpsertKeyRequest,
-    user_id: str = Depends(require_auth),
+    claims: dict = Depends(require_auth),
     db_url: str = Depends(_db_url),
 ) -> dict:
     """Store (or replace) a BYOK API key for a given provider."""
+    user_id = claims.get("sub")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentication required")
     hint = store_user_key(user_id, provider, body.api_key, db_url)
     return {"provider": provider, "key_hint": hint, "active": True}
 
 
 @router.delete("/api-keys/{provider}")
-def delete_api_key(
+async def delete_api_key(
     provider: Provider,
-    user_id: str = Depends(require_auth),
+    claims: dict = Depends(require_auth),
     db_url: str = Depends(_db_url),
 ) -> dict:
     """Deactivate a stored BYOK API key."""
+    user_id = claims.get("sub")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentication required")
     found = deactivate_user_key(user_id, provider, db_url)
     if not found:
         raise HTTPException(status_code=404, detail="No active key found for this provider")
@@ -49,10 +55,13 @@ def delete_api_key(
 
 
 @router.get("/api-keys")
-def list_api_keys(
-    user_id: str = Depends(require_auth),
+async def list_api_keys(
+    claims: dict = Depends(require_auth),
     db_url: str = Depends(_db_url),
 ) -> dict:
     """List all stored API key hints for the current user (keys never returned)."""
+    user_id = claims.get("sub")
+    if not user_id:
+        return {"keys": []}
     keys = list_user_keys(user_id, db_url)
     return {"keys": keys}
