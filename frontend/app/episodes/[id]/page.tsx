@@ -2,7 +2,8 @@
 import EpisodeCover from '@/components/EpisodeCover'
 import LevelTag from '@/components/LevelTag'
 import { useAudio } from '@/contexts/AudioContext'
-import { api, type EpisodeSegment, type LibraryEpisode, type Paper } from '@/lib/api'
+import { api, type EpisodeSegment, type FeedbackResult, type LibraryEpisode, type Paper } from '@/lib/api'
+import { episodeGradient, heroGradient, levelColor } from '@/lib/episode-utils'
 import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -114,6 +115,141 @@ function PapersTab({ papers, episodeId, userId }: {
   )
 }
 
+type FeedbackType = 'bug' | 'improvement' | 'positive'
+const FEEDBACK_TYPES: { type: FeedbackType; label: string; credits: number }[] = [
+  { type: 'bug',         label: 'Bug report',   credits: 5 },
+  { type: 'improvement', label: 'Improvement',  credits: 3 },
+  { type: 'positive',    label: 'Positive',     credits: 2 },
+]
+
+function FeedbackWidget({ episodeId, getToken }: {
+  episodeId: string
+  getToken: () => Promise<string | null>
+}) {
+  const [selected, setSelected] = useState<FeedbackType | null>(null)
+  const [content, setContent]   = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [result, setResult]     = useState<FeedbackResult | null>(null)
+  const [error, setError]       = useState('')
+
+  async function submit() {
+    if (!selected || content.trim().length < 10) return
+    setSubmitting(true)
+    setError('')
+    try {
+      const token = await getToken()
+      if (!token) throw new Error('Sign in to submit feedback')
+      const res = await api.submitFeedback({ feedback_type: selected, content: content.trim() }, token)
+      setResult(res)
+      setContent('')
+      setSelected(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Submission failed')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div style={{ marginTop: '40px', paddingTop: '24px', borderTop: '1px solid rgba(240,225,200,0.06)' }}>
+      <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '9.5px', letterSpacing: '1.4px', textTransform: 'uppercase', color: '#9a8c76', marginBottom: '10px' }}>
+        Feedback
+      </div>
+      <div style={{ fontSize: '12.5px', color: 'var(--text-muted)', marginBottom: '14px' }}>
+        Help us improve — earn credits for useful feedback.
+      </div>
+
+      {result ? (
+        <div style={{ padding: '14px 16px', background: '#1b1611', borderRadius: '10px', border: '1px solid rgba(123,174,143,0.2)' }}>
+          <div style={{ fontSize: '13px', color: '#7bae8f', marginBottom: '2px' }}>
+            {result.throttled
+              ? 'Thanks — feedback received (weekly credit cap reached).'
+              : `Thanks! +${result.credits_granted} credit${result.credits_granted !== 1 ? 's' : ''} added. Balance: ${result.new_balance}`}
+          </div>
+          <button
+            onClick={() => setResult(null)}
+            style={{ marginTop: '8px', fontSize: '12px', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+          >
+            Submit more feedback
+          </button>
+        </div>
+      ) : (
+        <>
+          {/* Type selector */}
+          <div style={{ display: 'flex', gap: '8px', marginBottom: selected ? '14px' : 0, flexWrap: 'wrap' }}>
+            {FEEDBACK_TYPES.map(({ type, label, credits }) => {
+              const active = selected === type
+              return (
+                <button
+                  key={type}
+                  onClick={() => setSelected(active ? null : type)}
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: '20px',
+                    fontSize: '12.5px',
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    border: `1px solid ${active ? 'rgba(214,164,78,0.5)' : 'rgba(240,225,200,0.1)'}`,
+                    background: active ? 'rgba(214,164,78,0.12)' : 'transparent',
+                    color: active ? '#d6a44e' : 'var(--text-secondary)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {label}
+                  <span style={{ marginLeft: '6px', opacity: 0.65, fontSize: '11px' }}>+{credits}cr</span>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Content + submit */}
+          {selected && (
+            <div>
+              <textarea
+                value={content}
+                onChange={e => setContent(e.target.value)}
+                placeholder="Describe the bug, suggestion, or what you liked… (min 10 characters)"
+                rows={3}
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  background: '#14110d',
+                  border: '1px solid rgba(240,225,200,0.1)',
+                  borderRadius: '8px',
+                  color: '#f3ece0',
+                  fontSize: '13px',
+                  resize: 'vertical',
+                  outline: 'none',
+                  fontFamily: 'inherit',
+                  boxSizing: 'border-box',
+                  marginBottom: '10px',
+                }}
+              />
+              {error && <div style={{ fontSize: '12px', color: '#d4715b', marginBottom: '8px' }}>{error}</div>}
+              <button
+                onClick={submit}
+                disabled={submitting || content.trim().length < 10}
+                style={{
+                  padding: '8px 18px',
+                  borderRadius: '8px',
+                  background: content.trim().length >= 10 ? '#d6a44e' : 'rgba(214,164,78,0.2)',
+                  color: content.trim().length >= 10 ? '#14110d' : '#9a8c76',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  border: 'none',
+                  cursor: content.trim().length >= 10 && !submitting ? 'pointer' : 'default',
+                  opacity: submitting ? 0.5 : 1,
+                }}
+              >
+                {submitting ? 'Sending…' : 'Submit'}
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
 export default function EpisodePage() {
   const { id } = useParams<{ id: string }>()
   const { getToken, userId } = useAuth()
@@ -204,70 +340,150 @@ export default function EpisodePage() {
   const { topic, level, field } = epParams(episode.manifest)
   const isPlaying = audioCtx.episodeId === id && audioCtx.playing
 
+  const lc = levelColor(level)
+
   return (
-    <div className="space-y-8">
-      {/* Hero */}
-      <div className="flex items-start gap-6">
-        <EpisodeCover episodeId={id} topic={topic} size="lg" className="flex-shrink-0" />
-        <div className="min-w-0 flex-1 pt-2">
-          <div className="flex items-center gap-2 mb-2 flex-wrap">
-            {level && <LevelTag level={level} />}
-            {field && (
-              <span className="text-xs font-medium tracking-wide uppercase" style={{ color: 'var(--text-muted)' }}>
-                {field}
-              </span>
-            )}
+    <div>
+      {/* Hero — full-bleed gradient, no border-radius */}
+      <div style={{ background: heroGradient(id), padding: '36px 32px 28px' }}>
+        <div style={{ display: 'flex', gap: '26px', alignItems: 'flex-end' }}>
+          {/* Album cover */}
+          <div
+            style={{
+              width: '200px',
+              height: '200px',
+              flex: 'none',
+              borderRadius: '14px',
+              background: episodeGradient(id, level),
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 18px 50px rgba(0,0,0,0.5)',
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "'Spectral', Georgia, serif",
+                fontSize: '80px',
+                lineHeight: 1,
+                color: 'rgba(255,255,255,0.96)',
+                textShadow: '0 3px 18px rgba(0,0,0,0.35)',
+              }}
+            >
+              {(topic ?? id).charAt(0).toUpperCase()}
+            </span>
           </div>
-          <h1 className="text-2xl font-semibold leading-snug mb-1" style={{ color: 'var(--text-primary)' }}>
-            {topic ?? id}
-          </h1>
-          <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
-            {new Date(episode.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-          </p>
 
-          <div className="flex items-center gap-3 flex-wrap">
-            {episode.status === 'done' && audioUrl && (
-              <button
-                onClick={handlePlay}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-opacity hover:opacity-80"
-                style={{ background: 'var(--text-primary)', color: 'var(--bg)' }}
-              >
-                {isPlaying ? (
-                  <>
-                    <svg width="11" height="12" viewBox="0 0 11 12" fill="currentColor" aria-hidden="true">
-                      <rect x="1" y="1" width="3.5" height="10" rx="1"/>
-                      <rect x="6.5" y="1" width="3.5" height="10" rx="1"/>
-                    </svg>
-                    Pause
-                  </>
-                ) : (
-                  <>
-                    <svg width="11" height="12" viewBox="0 0 11 12" fill="currentColor" aria-hidden="true">
-                      <path d="M2.5 1.5L9.5 6 2.5 10.5V1.5z"/>
-                    </svg>
-                    Play
-                  </>
-                )}
-              </button>
-            )}
+          {/* Metadata */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: '11px',
+                letterSpacing: '2px',
+                color: '#d6c9b0',
+                textTransform: 'uppercase',
+                marginBottom: '12px',
+              }}
+            >
+              {field ? `${field} · Curated Episode` : 'Curated Episode'}
+            </div>
+            <h1
+              style={{
+                fontFamily: "'Spectral', Georgia, serif",
+                fontSize: '42px',
+                fontWeight: 700,
+                lineHeight: 1.08,
+                marginBottom: '16px',
+                color: '#f3ece0',
+              }}
+            >
+              {topic ?? id}
+            </h1>
 
-            {episode.is_owner && episode.status === 'done' && (
-              <button
-                onClick={toggleShare}
-                disabled={sharing}
-                className="text-sm px-4 py-2 rounded-full transition-opacity hover:opacity-80 disabled:opacity-40"
-                style={{
-                  background: episode.shared ? 'var(--bg-elevated)' : 'transparent',
-                  color: episode.shared ? 'var(--text-secondary)' : 'var(--text-secondary)',
-                  border: '1px solid var(--border)',
-                }}
-              >
-                {sharing ? '…' : episode.shared ? 'Shared' : 'Share to library'}
-              </button>
-            )}
+            {/* Meta row */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '13px', color: '#c5b9a4', marginBottom: '18px', flexWrap: 'wrap' }}>
+              {level && (
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: '9.5px',
+                    letterSpacing: '0.8px',
+                    textTransform: 'uppercase',
+                    color: lc,
+                    border: `1px solid ${lc}66`,
+                    background: `${lc}1a`,
+                    padding: '2px 7px',
+                    borderRadius: '5px',
+                  }}
+                >
+                  {level}
+                </span>
+              )}
+              <span>PapersPod</span>
+              <span style={{ opacity: 0.4 }}>·</span>
+              <span>{new Date(episode.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            </div>
+
+            {/* Actions */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+              {episode.status === 'done' && audioUrl && (
+                <button
+                  onClick={handlePlay}
+                  style={{
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: '50%',
+                    background: '#d6a44e',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    boxShadow: '0 8px 26px rgba(214,164,78,0.38)',
+                    border: 'none',
+                    flexShrink: 0,
+                  }}
+                >
+                  {isPlaying ? (
+                    <span style={{ display: 'flex', gap: '4px' }}>
+                      <span style={{ width: '4px', height: '17px', background: '#14110d' }} />
+                      <span style={{ width: '4px', height: '17px', background: '#14110d' }} />
+                    </span>
+                  ) : (
+                    <svg width="18" height="20" viewBox="0 0 18 20" fill="none">
+                      <path d="M2 1.5L16.5 10 2 18.5V1.5z" fill="#14110d" />
+                    </svg>
+                  )}
+                </button>
+              )}
+
+              {episode.is_owner && episode.status === 'done' && (
+                <button
+                  onClick={toggleShare}
+                  disabled={sharing}
+                  style={{
+                    fontSize: '13px',
+                    padding: '8px 18px',
+                    borderRadius: '22px',
+                    background: episode.shared ? 'rgba(240,225,200,0.1)' : 'transparent',
+                    color: '#c5b9a4',
+                    border: '1px solid rgba(240,225,200,0.2)',
+                    cursor: 'pointer',
+                    opacity: sharing ? 0.4 : 1,
+                  }}
+                >
+                  {sharing ? '…' : episode.shared ? 'Shared' : 'Share to library'}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Content area */}
+      <div style={{ padding: '24px 32px 60px' }}>
 
       {/* Status */}
       {(episode.status === 'queued' || episode.status === 'running') && (
@@ -337,8 +553,11 @@ export default function EpisodePage() {
               )
             )}
           </div>
+
+          <FeedbackWidget episodeId={id} getToken={getToken} />
         </>
       )}
+      </div>{/* end content area */}
     </div>
   )
 }

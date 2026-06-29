@@ -81,8 +81,31 @@ export interface CreditsBalance {
   balance: number
 }
 
+export interface ApiKeyInfo {
+  provider: string
+  key_hint: string
+  active: boolean
+  created_at?: string
+  last_used_at?: string
+}
+
+export interface FeedbackResult {
+  credits_granted: number
+  new_balance: number
+  throttled: boolean
+}
+
 export const api = {
   getCredits:    (token: string) => req<CreditsBalance>('/credits', token),
+  getApiKeys:    (token: string) => req<{ keys: ApiKeyInfo[] }>('/settings/api-keys', token),
+  upsertApiKey:  (provider: string, apiKey: string, token: string) =>
+    req<{ provider: string; key_hint: string; active: boolean }>(`/settings/api-keys/${provider}`, token, {
+      method: 'PUT', body: JSON.stringify({ api_key: apiKey }),
+    }),
+  deleteApiKey:  (provider: string, token: string) =>
+    req<{ provider: string; active: boolean }>(`/settings/api-keys/${provider}`, token, { method: 'DELETE' }),
+  submitFeedback: (body: { feedback_type: 'bug' | 'improvement' | 'positive'; content: string }, token: string) =>
+    req<FeedbackResult>('/credits/feedback', token, { method: 'POST', body: JSON.stringify(body) }),
   listEpisodes:  (token?: string | null) => req<Episode[]>('/episodes', token),
   getEpisode:    (id: string, token?: string | null) => req<Episode>(`/episodes/${id}`, token),
   getAudioUrl:   (id: string) => req<{ url: string }>(`/episodes/${id}/audio-url`),

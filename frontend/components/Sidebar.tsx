@@ -5,8 +5,9 @@ import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
 const NAV = [
-  { href: '/',            label: 'Home' },
-  { href: '/library',     label: 'Library' },
+  { href: '/',         label: 'Home' },
+  { href: '/library',  label: 'Library' },
+  { href: '/settings', label: 'Settings' },
 ]
 
 const ADMIN_NAV = [

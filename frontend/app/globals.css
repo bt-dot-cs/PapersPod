@@ -5,23 +5,20 @@
 
   --bg:             #14110d;
   --bg-sidebar:     #100d0a;
-  --bg-card:        #1c1814;
-  --bg-elevated:    #241f19;
+  --bg-card:        #1b1611;
+  --bg-elevated:    #241d15;
   --text-primary:   #f3ece0;
   --text-secondary: #9a8c76;
-  --text-muted:     #6b5f4e;
+  --text-muted:     #8a7d6a;
   --accent:         #d6a44e;
   --accent-hover:   #e8b86a;
   --border:         #2a241d;
-  --border-subtle:  #201b15;
+  --border-subtle:  rgba(240,225,200,0.06);
 
-  /* Expertise level colors */
-  --level-curious:      #4db8b0;
-  --level-curious-bg:   rgba(77, 184, 176, 0.14);
-  --level-informed:     #c4875a;
-  --level-informed-bg:  rgba(196, 135, 90, 0.14);
-  --level-expert:       #9b7fd4;
-  --level-expert-bg:    rgba(155, 127, 212, 0.14);
+  /* Expertise level colors — Aria palette */
+  --level-curious:  #7bae8f;
+  --level-informed: #d6a44e;
+  --level-expert:   #d4715b;
 }
 
 html,
@@ -56,7 +53,6 @@ body {
 
 .main-scroll {
   overflow-y: auto;
-  padding: 2.5rem 2rem;
 }
 
 .player-bar {
@@ -73,4 +69,15 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 500;
+}
+
+/* Episode card hover */
+.ep-card:hover {
+  background: #241d15;
+  transform: translateY(-3px);
+}
+
+/* Surprise banner hover */
+.surprise-banner:hover {
+  border-color: rgba(214,164,78,0.55);
 }
