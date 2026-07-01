@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 # Credits
 # ---------------------------------------------------------------------------
 
-SIGNUP_BONUS = 5
+SIGNUP_BONUS = 275
 
 
 class InsufficientCreditsError(Exception):

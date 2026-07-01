@@ -69,7 +69,6 @@ class KnowledgeGraph:
         if paper.study_period_end is not None:
             self._graph.nodes[node_id]["study_period_end"] = paper.study_period_end.isoformat()
 
-        self.save()
         return node_id
 
     def add_concept(self, name: str, description: str = "") -> str:
@@ -91,7 +90,6 @@ class KnowledgeGraph:
             if description:
                 self._graph.nodes[node_id]["description"] = description
 
-        self.save()
         return node_id
 
     def add_method(self, name: str) -> str:
@@ -107,7 +105,6 @@ class KnowledgeGraph:
                 first_seen_date=today,
             )
 
-        self.save()
         return node_id
 
     def add_dataset(self, name: str, temporal_scope: Optional[tuple] = None) -> str:
@@ -121,7 +118,6 @@ class KnowledgeGraph:
                 attrs["temporal_scope"] = str(temporal_scope)
             self._graph.add_node(node_id, **attrs)
 
-        self.save()
         return node_id
 
     def add_author(self, name: str) -> str:
@@ -137,7 +133,6 @@ class KnowledgeGraph:
                 first_seen_date=today,
             )
 
-        self.save()
         return node_id
 
     # ------------------------------------------------------------------
@@ -147,7 +142,6 @@ class KnowledgeGraph:
     def add_edge(self, source_id: str, target_id: str, edge_type: str, **attrs) -> None:
         """Add a directed edge between two nodes."""
         self._graph.add_edge(source_id, target_id, edge_type=edge_type, **attrs)
-        self.save()
 
     # ------------------------------------------------------------------
     # Query

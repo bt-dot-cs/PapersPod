@@ -56,7 +56,8 @@ def _build_keyword_terms(keywords: list[str]) -> list[str]:
 
 def build_search_query(query: QueryParameters) -> str:
     """Combine topic, discipline category codes, and keyword abs: terms into an arXiv query string."""
-    parts = [query.topic]
+    # Quote the topic so multi-word phrases aren't parsed as independent OR terms by arXiv
+    parts = [f'"{query.topic}"']
     categories = []
     for discipline in query.disciplines:
         key = discipline.lower().strip()

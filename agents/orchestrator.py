@@ -231,6 +231,7 @@ async def run_pipeline(
     episode_id: str,
     voice_provider: str | None = None,
     warning_capture: "_WarningCapture | None" = None,
+    on_stage_start: "None | object" = None,
 ) -> tuple[Episode, TokenUsage, int, str, dict[str, float]]:
     """Execute the full pipeline and return (episode, token_usage, tts_chars, stage_times)."""
     from agents import bibliography_agent, fetcher_agent, graph_agent, script_agent, voice_agent
@@ -263,6 +264,8 @@ async def run_pipeline(
     logger.info("[2/5] Done (%.1fs) — %s", stage_times["bibliography"], bibliography_path)
 
     # Step 3: Build knowledge graph
+    if callable(on_stage_start):
+        on_stage_start("building")
     logger.info("[3/5] Building knowledge graph...")
     t = time.time()
     graph = KnowledgeGraph()

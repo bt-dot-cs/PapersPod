@@ -7,6 +7,8 @@ from core.models import Paper, TokenUsage
 
 logger = logging.getLogger(__name__)
 
+MAX_AUTHORS_PER_PAPER = 25
+
 _EXTRACT_PROMPT = """\
 Extract structured knowledge from this research paper abstract.
 
@@ -49,8 +51,14 @@ async def run(papers: list[Paper], episode_id: str, graph: KnowledgeGraph) -> tu
         # Add paper node
         paper_node_id = graph.add_paper(paper)
 
-        # Add author nodes and edges
-        for author_name in paper.authors:
+        # Add author nodes and edges (capped to avoid O(N) saves on large-collaboration papers)
+        authors_to_index = paper.authors[:MAX_AUTHORS_PER_PAPER]
+        if len(paper.authors) > MAX_AUTHORS_PER_PAPER:
+            logger.warning(
+                "GraphAgent: paper %s has %d authors — indexing first %d only",
+                paper.arxiv_id, len(paper.authors), MAX_AUTHORS_PER_PAPER,
+            )
+        for author_name in authors_to_index:
             author_id = graph.add_author(author_name)
             graph.add_edge(paper_node_id, author_id, edge_type="CO_AUTHORED_BY")
 
@@ -102,6 +110,7 @@ async def run(papers: list[Paper], episode_id: str, graph: KnowledgeGraph) -> tu
             to_id = graph.add_concept(to_name)
             graph.add_edge(from_id, to_id, edge_type="RELATED_TO", relationship=relationship)
 
+        graph.save()
         logger.info(
             "GraphAgent: added paper %s — %d concepts, %d methods, %d datasets",
             paper.arxiv_id,
@@ -110,6 +119,5 @@ async def run(papers: list[Paper], episode_id: str, graph: KnowledgeGraph) -> tu
             len(data.get("datasets", [])),
         )
 
-    graph.save()
     logger.info("GraphAgent: graph has %d nodes", graph._graph.number_of_nodes())
     return graph, usage

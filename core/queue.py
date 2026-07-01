@@ -96,11 +96,14 @@ async def generate_episode(query_dict: dict, episode_id: str) -> None:
 
     db_url = os.getenv("DATABASE_URL")
 
-    if db_url:
-        try:
-            update_episode_status(episode_id, "running", db_url)
-        except Exception as exc:
-            logger.warning("Failed to set episode %s running: %s", episode_id, exc)
+    def _on_stage(stage: str) -> None:
+        if db_url:
+            try:
+                update_episode_status(episode_id, stage, db_url)
+            except Exception as exc:
+                logger.warning("Failed to set episode %s status to %s: %s", episode_id, stage, exc)
+
+    _on_stage("planning")
 
     warning_capture = _WarningCapture()
     logging.getLogger().addHandler(warning_capture)
@@ -109,7 +112,7 @@ async def generate_episode(query_dict: dict, episode_id: str) -> None:
     try:
         query = QueryParameters.model_validate(query_dict)
         episode, usage, tts_chars, tts_provider_used, stage_times, segments = await run_pipeline(
-            query, episode_id, warning_capture=warning_capture
+            query, episode_id, warning_capture=warning_capture, on_stage_start=_on_stage
         )
     except Exception as exc:
         logger.error("Episode %s failed: %s", episode_id, exc, exc_info=True)

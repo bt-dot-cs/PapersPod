@@ -20,7 +20,7 @@ export interface EpisodeSegment {
 
 export interface Episode {
   episode_id: string
-  status: 'queued' | 'running' | 'done' | 'failed'
+  status: 'queued' | 'planning' | 'building' | 'running' | 'done' | 'failed'
   created_at: string
   completed_at?: string
   error?: string

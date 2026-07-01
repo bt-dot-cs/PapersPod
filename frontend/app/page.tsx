@@ -253,8 +253,15 @@ export default async function HomePage() {
     api.getLibrary().catch(() => [] as LibraryEpisode[]),
   ])
 
+  const ACTIVE_STATUSES = new Set(['queued', 'planning', 'building', 'running'])
+  const STATUS_LABEL: Record<string, string> = {
+    queued:   'Queued',
+    planning: 'Planning…',
+    building: 'Building…',
+    running:  'Running…',
+  }
   const doneEpisodes = myEpisodes.filter(ep => ep.status === 'done')
-  const inProgress   = myEpisodes.filter(ep => ep.status === 'queued' || ep.status === 'running')
+  const inProgress   = myEpisodes.filter(ep => ACTIVE_STATUSES.has(ep.status))
 
   return (
     <div style={{ padding: '30px 32px 60px' }}>
@@ -382,7 +389,7 @@ export default async function HomePage() {
               marginBottom: '10px',
             }}
           >
-            Generating
+            Active
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {inProgress.map(ep => {
@@ -404,8 +411,8 @@ export default async function HomePage() {
                     <p style={{ fontSize: '14px', fontWeight: 500, color: '#f3ece0' }}>
                       {topic ?? ep.episode_id}
                     </p>
-                    <p style={{ fontSize: '12px', color: '#d6a44e', textTransform: 'capitalize' }}>
-                      {ep.status}…
+                    <p style={{ fontSize: '12px', color: '#d6a44e' }}>
+                      {STATUS_LABEL[ep.status] ?? ep.status}
                     </p>
                   </div>
                 </Link>

@@ -21,11 +21,11 @@ from web.auth import optional_auth, require_auth
 
 # Credit cost by curation level (matches the spec)
 _CURATION_COST: dict[str, int] = {
-    "auto":            1,
-    "keyword_guided":  1,
-    "context_guided":  2,
-    "anchor_guided":   2,
-    "fully_guided":    3,
+    "auto":            55,
+    "keyword_guided":  55,
+    "context_guided":  65,
+    "anchor_guided":   65,
+    "fully_guided":    75,
 }
 
 router = APIRouter(prefix="/episodes", tags=["episodes"])

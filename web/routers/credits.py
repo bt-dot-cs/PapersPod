@@ -14,11 +14,11 @@ from web.auth import require_auth
 
 router = APIRouter(prefix="/credits", tags=["credits"])
 
-FEEDBACK_WEEKLY_CAP = 10  # max credit points grantable via feedback per user per 7 days
+FEEDBACK_WEEKLY_CAP = 65  # max credit points grantable via feedback per user per 7 days (= 1 standard episode)
 FEEDBACK_AMOUNTS: dict[str, int] = {
-    "bug": 5,
-    "improvement": 3,
-    "positive": 2,
+    "bug": 20,
+    "improvement": 12,
+    "positive": 7,
 }
 
 
