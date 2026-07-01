@@ -1,6 +1,7 @@
 import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata } from 'next'
 import { IBM_Plex_Mono, IBM_Plex_Sans, Spectral } from 'next/font/google'
+import Link from 'next/link'
 import NowPlayingOverlay from '@/components/NowPlayingOverlay'
 import PlayerBar from '@/components/PlayerBar'
 import Sidebar from '@/components/Sidebar'
@@ -42,7 +43,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AudioProvider>
             <div className="app-shell">
               <Sidebar />
-              <main className="main-scroll">{children}</main>
+              <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', flex: 1, overflow: 'hidden' }}>
+                <main className="main-scroll" style={{ flex: 1 }}>{children}</main>
+                <footer style={{
+                  display: 'flex',
+                  gap: '20px',
+                  padding: '16px 32px',
+                  borderTop: '1px solid rgba(240,225,200,0.06)',
+                  flexShrink: 0,
+                }}>
+                  {[
+                    { href: '/terms', label: 'Terms' },
+                    { href: '/privacy', label: 'Privacy' },
+                    { href: '/cookies', label: 'Cookies' },
+                  ].map(({ href, label }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      style={{
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: '10px',
+                        letterSpacing: '1px',
+                        textTransform: 'uppercase',
+                        color: '#6a5f52',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </footer>
+              </div>
             </div>
             <PlayerBar />
             <NowPlayingOverlay />
